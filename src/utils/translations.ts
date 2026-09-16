@@ -1,0 +1,1386 @@
+import { LanguageCode } from '../types';
+
+export interface TranslationDictionary {
+  [key: string]: {
+    en: string;
+    hi: string;
+    bn: string;
+    ta: string;
+  };
+}
+
+export const translations: TranslationDictionary = {
+  // App Identity
+  app_name: {
+    en: 'SwasthyaSetu',
+    hi: 'स्वास्थ्यसेतु',
+    bn: 'স্বাস্থ্যসেতু',
+    ta: 'சுவஸ்த்யா சேது',
+  },
+  app_tagline: {
+    en: 'Rural Telehealth & Longitudinal EHR Care Network',
+    hi: 'ग्रामीण टेलीहेल्थ एवं डिजिटल स्वास्थ्य नेटवर्क',
+    bn: 'গ্রামীণ টেলিহেলথ এবং ডিজিটাল স্বাস্থ্য রেকর্ড নেটওয়ার্ক',
+    ta: 'கிராமப்புற தொலைமருத்துவம் மற்றும் சுகாதார வலையமைப்பு',
+  },
+
+  // Auth & Roles
+  login: {
+    en: 'Sign In',
+    hi: 'लॉग इन करें',
+    bn: 'লগ ইন করুন',
+    ta: 'உள்நுழையவும்',
+  },
+  logout: {
+    en: 'Log Out',
+    hi: 'लॉग आउट',
+    bn: 'লগ আউট',
+    ta: 'வெளியேறு',
+  },
+  role_doctor: {
+    en: 'Doctor / Medical Officer',
+    hi: 'चिकित्सक / मेडिकल ऑफिसर',
+    bn: 'ডাক্তার / মেডিকেল অফিসার',
+    ta: 'மருத்துவர் / மருத்துவ அலுவலர்',
+  },
+  role_patient: {
+    en: 'Patient / Citizen (ABHA)',
+    hi: 'मरीज / नागरिक (आभा)',
+    bn: 'রোগী / নাগরিক (ABHA)',
+    ta: 'நோயாளி / குடிமகன் (ABHA)',
+  },
+  role_admin: {
+    en: 'Health Administrator / CMO',
+    hi: 'स्वास्थ्य प्रशासक / सीएमओ',
+    bn: 'স্বাস্থ্য প্রশাসক / সিএমও',
+    ta: 'சுகாதார நிர்வாகி / சி.எம்.ஓ',
+  },
+  role_asha: {
+    en: 'Frontline Worker (ASHA/ANM)',
+    hi: 'आशा / एएनएम दीदी',
+    bn: 'আশা / এএনএম কর্মী',
+    ta: 'ஆஷா களப்பணியாளர்',
+  },
+
+  // Navigation & Sections
+  dashboard_overview: {
+    en: 'Dashboard Overview',
+    hi: 'डैशबोर्ड अवलोकन',
+    bn: 'ড্যাশবোর্ড ওভারভিউ',
+    ta: 'முகப்பு பலகை கண்ணோட்டம்',
+  },
+  doctor_appointments: {
+    en: 'Doctor Appointments',
+    hi: 'डॉक्टर अपॉइंटमेंट्स',
+    bn: 'ডাক্তারের অ্যাপয়েন্টমেন্ট',
+    ta: 'மருத்துவர் முன்பதிவு',
+  },
+  nearby_hospitals: {
+    en: 'Hospitals Near Me',
+    hi: 'नजदीकी अस्पताल खोजें',
+    bn: 'কাছের হাসপাতাল খুঁজুন',
+    ta: 'அருகிலுள்ள மருத்துவமனைகள்',
+  },
+  govt_schemes: {
+    en: 'Govt Health Schemes',
+    hi: 'सरकारी स्वास्थ्य योजनाएँ',
+    bn: 'সরকারি স্বাস্থ্য প্রকল্প',
+    ta: 'அரசு சுகாதார திட்டங்கள்',
+  },
+  current_vitals: {
+    en: 'Current Health Vitals',
+    hi: 'स्वास्थ्य स्थिति व वाइटल्स',
+    bn: 'বর্তমান স্বাস্থ্য লক্ষণ (ভাইটালস)',
+    ta: 'தற்போதைய உடல்நல அளவீடுகள்',
+  },
+  telehealth_queue: {
+    en: 'Telehealth Waiting Queue',
+    hi: 'टेलीहेल्थ प्रतीक्षा कतार',
+    bn: 'টেলিহেলথ অপেক্ষার তালিকা',
+    ta: 'தொலைமருத்துவ காத்திருப்பு வரிசை',
+  },
+  patient_records: {
+    en: 'Patient EHR Records',
+    hi: 'मरीजों के डिजिटल रिकॉर्ड',
+    bn: 'রোগীর স্বাস্থ্য রেকর্ড',
+    ta: 'மருத்துவ மின்னணு ஆவணங்கள்',
+  },
+  referral_network: {
+    en: 'Referral Tracking Network',
+    hi: 'रेफरल ट्रैकिंग नेटवर्क',
+    bn: 'রেফারেল ট্র্যাকিং নেটওয়ার্ক',
+    ta: 'பரிந்துரை கண்காணிப்பு வலைப்பின்னல்',
+  },
+  medicine_stock: {
+    en: 'Essential Medicine Stock',
+    hi: 'आवश्यक दवाइयों का स्टॉक',
+    bn: 'জরুরী ওষুধের মজুদ',
+    ta: 'அத்தியாவசிய மருந்து இருப்பு',
+  },
+  digital_triage: {
+    en: 'Doorstep Digital Triage',
+    hi: 'डिजिटल ट्राइएज एवं स्क्रीनिंग',
+    bn: 'ডিজিটাল ট্রায়াজ ও স্ক্রীনিং',
+    ta: 'டிஜிட்டல் ட்ரையேஜ் சோதனை',
+  },
+  emergency_sos: {
+    en: 'Emergency Escalation (108 SOS)',
+    hi: 'आपातकालीन सहायता (108 SOS)',
+    bn: 'জরুরী সহায়তা (108 SOS)',
+    ta: 'அவசர உதவி (108 SOS)',
+  },
+  high_risk_followup: {
+    en: 'High-Risk Follow-Ups',
+    hi: 'हाई-रिस्क फॉलो-अप',
+    bn: 'উচ্চ-ঝুঁকি ফলো-আপ',
+    ta: 'அதி-தீவிர பின்தொடர்தல்',
+  },
+  quality_reviews: {
+    en: 'Quality & Reviews',
+    hi: 'गुणवत्ता व समीक्षा (रेटिंग)',
+    bn: 'গুণমান ও রোগীর পর্যালোচনা',
+    ta: 'தரம் மற்றும் மதிப்புரைகள்',
+  },
+  dialect_dictionary: {
+    en: 'Rural Dialect Dictionary',
+    hi: 'ग्रामीण बोली शब्दकोश',
+    bn: 'গ্রামীণ উপভাষা অভিধান',
+    ta: 'கிராமப்புற வட்டார அகராதி',
+  },
+
+  // Connectivity
+  connectivity_high: {
+    en: 'Online (4G/Fiber)',
+    hi: 'ऑनलाइन (4G/उच्च)',
+    bn: 'অনলাইন (4G/উচ্চ গতি)',
+    ta: 'ஆன்லைன் (4G/வேகமானது)',
+  },
+  connectivity_low: {
+    en: '2G Low Bandwidth (Audio Optimized)',
+    hi: '2G कम नेटवर्क (ऑडियो प्राथमिकता)',
+    bn: '2G কম নেটওয়ার্ক (অডিও মোড)',
+    ta: '2G குறைந்த அலைவரிசை',
+  },
+  connectivity_offline: {
+    en: 'Offline Mode (Store & Forward)',
+    hi: 'ऑफलाइन मोड (स्थानीय सिंक कतार)',
+    bn: 'অফলাইন মোড (লোকাল সিঙ্ক)',
+    ta: 'ஆஃப்லைன் முறைமை',
+  },
+
+  // Telehealth & Calling
+  start_call: {
+    en: 'Start Teleconsultation',
+    hi: 'परामर्श शुरू करें',
+    bn: 'পরামর্শ শুরু করুন',
+    ta: 'ஆலோசனை தொடங்கவும்',
+  },
+  join_call: {
+    en: 'Join Video Consultation',
+    hi: 'वीडियो कॉल से जुड़ें',
+    bn: 'ভিডিও কলে যুক্ত হন',
+    ta: 'காணொளி ஆலோசனையில் இணையவும்',
+  },
+  end_call: {
+    en: 'End Consultation',
+    hi: 'परामर्श समाप्त करें',
+    bn: 'পরামর্শ সমাপ্ত করুন',
+    ta: 'ஆலோசனையை முடிக்கவும்',
+  },
+  live_subtitles: {
+    en: 'Live AI Subtitles & Translation',
+    hi: 'सजीव अनुवाद व उपशीर्षक (Live Subtitles)',
+    bn: 'লাইভ সাবটাইটেল ও অনুবাদ',
+    ta: 'நேரலை வசனங்கள் மற்றும் மொழிபெயர்ப்பு',
+  },
+  listen_aloud: {
+    en: 'Listen Voice (बोलकर सुनाएं)',
+    hi: 'बोलकर सुनाएं (ऑडियो)',
+    bn: 'ভয়েস শুনুন (অডিও)',
+    ta: 'குரல் வழியே கேளுங்கள்',
+  },
+
+  // Prescription & Dosages
+  view_ehr: {
+    en: 'View Full EHR',
+    hi: 'संपूर्ण रिकॉर्ड देखें',
+    bn: 'সম্পূর্ণ রেকর্ড দেখুন',
+    ta: 'முழு மருத்துவப் பதிவைக் காண்க',
+  },
+  prescribe: {
+    en: 'Issue e-Prescription',
+    hi: 'डिजिटल पर्चा बनाएं',
+    bn: 'ডিজিটাল প্রেসক্রিপশন দিন',
+    ta: 'மின்-மருந்துச் சீட்டு வழங்கவும்',
+  },
+  dosage_morning: {
+    en: 'Morning',
+    hi: 'सुबह',
+    bn: 'সকালে',
+    ta: 'காலை',
+  },
+  dosage_afternoon: {
+    en: 'Afternoon',
+    hi: 'दोपहर',
+    bn: 'দুপুরে',
+    ta: 'மதியம்',
+  },
+  dosage_night: {
+    en: 'Night',
+    hi: 'रात',
+    bn: 'রাতে',
+    ta: 'இரவு',
+  },
+  after_food: {
+    en: 'After Food (भोजन के बाद)',
+    hi: 'भोजन के बाद',
+    bn: 'খাবারের পর',
+    ta: 'உணவுக்குப் பின்',
+  },
+  before_food: {
+    en: 'Before Food (खाली पेट)',
+    hi: 'खाली पेट (भोजन से पहले)',
+    bn: 'খালি পেটে (খাবারের আগে)',
+    ta: 'வெறும் வயிற்றில்',
+  },
+  voice_prescription: {
+    en: 'Listen Prescription Audio',
+    hi: 'पर्चा बोलकर सुनाएं (Voice Rx)',
+    bn: 'প্রেসক্রিপশন অডিও শুনুন',
+    ta: 'மருந்துச் சீட்டை குரலில் கேளுங்கள்',
+  },
+
+  // Clinical Categories
+  high_risk_pregnancy: {
+    en: 'High-Risk Pregnancy (ANC)',
+    hi: 'उच्च जोखिम गर्भावस्था (ANC)',
+    bn: 'উচ্চ ঝুঁকিপূর্ণ গর্ভাবস্থা (ANC)',
+    ta: 'அதிக ஆபத்து கர்ப்பகால பராமரிப்பு',
+  },
+  child_malnutrition: {
+    en: 'Pediatric Malnutrition (SAM/MAM)',
+    hi: 'शिशु कुपोषण (SAM/MAM)',
+    bn: 'শিশু অপুষ্টি (SAM/MAM)',
+    ta: 'குழந்தை ஊட்டச்சத்துக் குறைபாடு',
+  },
+
+  // PriorityPatientQueue
+  queue_title: {
+    en: 'Priority-Sorted Patient Queue',
+    hi: 'प्राथमिकता-आधारित मरीज़ कतार',
+    bn: 'অগ্রাধিকার-ভিত্তিক রোগীর তালিকা',
+    ta: 'முன்னுரிமை வரிசைப்படுத்தப்பட்ட நோயாளி வரிசை',
+  },
+  ai_triage_active: {
+    en: 'AI Triage Engine Active',
+    hi: 'AI ट्राइएज सक्रिय',
+    bn: 'AI ট্রায়াজ সক্রিয়',
+    ta: 'AI ட்ரையேஜ் இயங்கும்',
+  },
+  all_patients: {
+    en: 'All Patients',
+    hi: 'सभी मरीज़',
+    bn: 'সকল রোগী',
+    ta: 'அனைத்து நோயாளிகள்',
+  },
+  tier_red_emergency: {
+    en: 'Red: Emergency',
+    hi: 'लाल: आपातकाल',
+    bn: 'লাল: জরুরি',
+    ta: 'சிவப்பு: அவசரநிலை',
+  },
+  tier_orange_urgent: {
+    en: 'Orange: Urgent',
+    hi: 'नारंगी: अत्यावश्यक',
+    bn: 'কমলা: জরুরি',
+    ta: 'ஆரஞ்சு: அவசரம்',
+  },
+  tier_yellow_priority: {
+    en: 'Yellow: Priority',
+    hi: 'पीला: प्राथमिक',
+    bn: 'হলুদ: অগ্রাধিকার',
+    ta: 'மஞ்சள்: முன்னுரிமை',
+  },
+  tier_green_routine: {
+    en: 'Green: Routine',
+    hi: 'हरा: साधारण',
+    bn: 'সবুজ: সাধারণ',
+    ta: 'பச்சை: வழக்கமான',
+  },
+  sort_label: {
+    en: 'Sort:',
+    hi: 'क्रम:',
+    bn: 'ক্রম:',
+    ta: 'வரிசை:',
+  },
+  sort_clinical_priority: {
+    en: 'Clinical Priority (Triage)',
+    hi: 'क्लिनिकल प्राथमिकता (ट्राइएज)',
+    bn: 'ক্লিনিকাল অগ্রাধিকার (ট্রায়াজ)',
+    ta: 'மருத்துவ முன்னுரிமை (ட்ரையேஜ்)',
+  },
+  sort_longest_wait: {
+    en: 'Longest Wait (FIFO)',
+    hi: 'सबसे अधिक प्रतीक्षा (FIFO)',
+    bn: 'দীর্ঘতম অপেক্ষা (FIFO)',
+    ta: 'நீண்ட காத்திருப்பு (FIFO)',
+  },
+  sort_by_subcentre: {
+    en: 'By Sub-Centre',
+    hi: 'उप-केंद्र के अनुसार',
+    bn: 'উপ-কেন্দ্র অনুযায়ী',
+    ta: 'துணை-மையம் வாரியாக',
+  },
+  search_queue_placeholder: {
+    en: 'Search by patient name, complaint, ABHA ID or Sub-Centre...',
+    hi: 'मरीज़ का नाम, शिकायत, ABHA ID या उप-केंद्र खोजें...',
+    bn: 'রোগীর নাম, অভিযোগ, ABHA ID বা উপ-কেন্দ্র খুঁজুন...',
+    ta: 'நோயாளி பெயர், புகார், ABHA ID அல்லது துணை மையம் தேடவும்...',
+  },
+  no_patients_filter: {
+    en: 'No Patients in this Filter',
+    hi: 'इस फ़िल्टर में कोई मरीज़ नहीं',
+    bn: 'এই ফিল্টারে কোনো রোগী নেই',
+    ta: 'இந்த வடிகட்டியில் நோயாளிகள் இல்லை',
+  },
+  reset_filters: {
+    en: 'Reset Filters',
+    hi: 'फ़िल्टर रीसेट करें',
+    bn: 'ফিল্টার রিসেট করুন',
+    ta: 'வடிகட்டிகளை மீட்டமை',
+  },
+  tier_immediate_emergency: {
+    en: 'Immediate Emergency',
+    hi: 'तत्काल आपातकाल',
+    bn: 'তাৎক্ষণিক জরুরি',
+    ta: 'உடனடி அவசரநிலை',
+  },
+  tier_urgent_priority: {
+    en: 'Urgent Priority',
+    hi: 'तत्काल प्राथमिकता',
+    bn: 'জরুরি অগ্রাধিকার',
+    ta: 'அவசர முன்னுரிமை',
+  },
+  tier_moderate_triage: {
+    en: 'Moderate Triage',
+    hi: 'मध्यम ट्राइएज',
+    bn: 'মাঝারি ট্রায়াজ',
+    ta: 'நடுத்தர ட்ரையேஜ்',
+  },
+  tier_routine_opd: {
+    en: 'Routine OPD',
+    hi: 'साधारण ओपीडी',
+    bn: 'সাধারণ OPD',
+    ta: 'வழக்கமான OPD',
+  },
+  wait_penalty: {
+    en: 'Wait Penalty',
+    hi: 'प्रतीक्षा अंक',
+    bn: 'অপেক্ষার পেনাল্টি',
+    ta: 'காத்திருப்பு அபராதம்',
+  },
+  physician_override: {
+    en: 'Physician Override',
+    hi: 'डॉक्टर द्वारा बदला गया',
+    bn: 'চিকিৎসকের হস্তক্ষেপ',
+    ta: 'மருத்துவர் மேலெழுதல்',
+  },
+  new_patient_first_visit: {
+    en: 'New Patient (First Visit)',
+    hi: 'नया मरीज़ (पहली बार)',
+    bn: 'নতুন রোগী (প্রথম পরিদর্শন)',
+    ta: 'புதிய நோயாளி (முதல் வருகை)',
+  },
+  vitals_symptom_mismatch: {
+    en: '⚠️ Vitals-Symptom Mismatch Detected',
+    hi: '⚠️ वाइटल्स-लक्षण असंगति मिली',
+    bn: '⚠️ ভাইটাল-উপসর্গ অসংগতি শনাক্ত',
+    ta: '⚠️ உயிர்நலன்-அறிகுறி முரண்பாடு கண்டறியப்பட்டது',
+  },
+  anti_gaming_guardrail: {
+    en: 'Anti-Gaming Guardrail Active',
+    hi: 'एंटी-गेमिंग सुरक्षा सक्रिय',
+    bn: 'অ্যান্টি-গেমিং গার্ড সক্রিয়',
+    ta: 'எதிர்-தவறான-பயன்பாடு பாதுகாப்பு சக்தியில்',
+  },
+  vitals_pending: {
+    en: 'Vitals pending at spoke kiosk',
+    hi: 'उप-केंद्र पर वाइटल्स बाकी',
+    bn: 'উপ-কেন্দ্রে ভাইটাল বাকি',
+    ta: 'துணை மையத்தில் உயிர்நலன் நிலுவையில்',
+  },
+  spoke_link: {
+    en: 'Spoke Link:',
+    hi: 'स्पोक लिंक:',
+    bn: 'স্পোক সংযোগ:',
+    ta: 'கிளை இணைப்பு:',
+  },
+  start_emergency_call: {
+    en: 'Start Emergency Call',
+    hi: 'आपातकालीन कॉल शुरू करें',
+    bn: 'জরুরি কল শুরু করুন',
+    ta: 'அவசர அழைப்பை தொடங்கு',
+  },
+  start_consult_call: {
+    en: 'Start Consult Call',
+    hi: 'परामर्श कॉल शुरू करें',
+    bn: 'পরামর্শ কল শুরু করুন',
+    ta: 'ஆலோசனை அழைப்பை தொடங்கு',
+  },
+  rx_slip: {
+    en: 'Rx Slip',
+    hi: 'पर्चा',
+    bn: 'প্রেসক্রিপশন',
+    ta: 'மருந்துச் சீட்டு',
+  },
+  abdm_ehr: {
+    en: 'ABDM EHR',
+    hi: 'ABDM रिकॉर्ड',
+    bn: 'ABDM রেকর্ড',
+    ta: 'ABDM பதிவு',
+  },
+  override: {
+    en: 'Override',
+    hi: 'बदलें',
+    bn: 'পরিবর্তন',
+    ta: 'மாற்றவும்',
+  },
+  triage_override_desk: {
+    en: 'Clinical Triage Override Desk',
+    hi: 'ट्राइएज ओवरराइड डेस्क',
+    bn: 'ট্রায়াজ ওভাররাইড ডেস্ক',
+    ta: 'ட்ரையேஜ் மேலெழுதல் மேசை',
+  },
+  override_description: {
+    en: 'As the consulting physician, you can manually elevate or adjust the priority of this patient in the queue.',
+    hi: 'परामर्श चिकित्सक के रूप में, आप इस मरीज़ की प्राथमिकता मैन्युअल रूप से बदल सकते हैं।',
+    bn: 'পরামর্শকারী চিকিৎসক হিসেবে, আপনি এই রোগীর অগ্রাধিকার ম্যানুয়ালি পরিবর্তন করতে পারেন।',
+    ta: 'ஆலோசனை மருத்துவராக, இந்த நோயாளியின் முன்னுரிமையை கையேடாக மாற்றலாம்.',
+  },
+  mark_red_emergency: {
+    en: 'Mark RED (Emergency)',
+    hi: 'लाल (आपातकाल) चिह्नित करें',
+    bn: 'লাল (জরুরি) চিহ্নিত করুন',
+    ta: 'சிவப்பு (அவசரம்) குறிக்கவும்',
+  },
+  mark_orange_urgent: {
+    en: 'Mark ORANGE (Urgent)',
+    hi: 'नारंगी (तत्काल) चिह्नित करें',
+    bn: 'কমলা (জরুরি) চিহ্নিত করুন',
+    ta: 'ஆரஞ்சு (அவசரம்) குறிக்கவும்',
+  },
+  mark_yellow_priority: {
+    en: 'Mark YELLOW (Priority)',
+    hi: 'पीला (प्राथमिक) चिह्नित करें',
+    bn: 'হলুদ (অগ্রাধিকার) চিহ্নিত করুন',
+    ta: 'மஞ்சள் (முன்னுரிமை) குறிக்கவும்',
+  },
+  mark_green_routine: {
+    en: 'Mark GREEN (Routine)',
+    hi: 'हरा (साधारण) चिह्नित करें',
+    bn: 'সবুজ (সাধারণ) চিহ্নিত করুন',
+    ta: 'பச்சை (வழக்கமான) குறிக்கவும்',
+  },
+  demote_exaggerated: {
+    en: 'Demote: Exaggerated / Non-Emergency Claim (FIFO Line)',
+    hi: 'डिमोट: अतिरंजित / गैर-आपातकालीन दावा (FIFO कतार)',
+    bn: 'ডিমোট: অতিরঞ্জিত / অ-জরুরি দাবি (FIFO লাইন)',
+    ta: 'குறைத்தல்: மிகையான / அவசரமில்லாத கோரிக்கை (FIFO வரிசை)',
+  },
+  cancel: {
+    en: 'Cancel',
+    hi: 'रद्द करें',
+    bn: 'বাতিল করুন',
+    ta: 'ரத்து செய்',
+  },
+  sos_108: {
+    en: '108 Rural SOS',
+    hi: '108 ग्रामीण SOS',
+    bn: '108 গ্রামীণ SOS',
+    ta: '108 கிராமப்புற SOS',
+  },
+
+  // IncomingReferralInbox
+  referral_inbox_title: {
+    en: 'Incoming Referral Inbox',
+    hi: 'आने वाले रेफरल इनबॉक्स',
+    bn: 'আগত রেফারেল ইনবক্স',
+    ta: 'வரும் பரிந்துரை இன்பாக்ஸ்',
+  },
+  receiving_facility: {
+    en: 'Receiving Facility',
+    hi: 'प्राप्तकर्ता सुविधा',
+    bn: 'গ্রহণকারী হাসপাতাল',
+    ta: 'பெறுகின்ற வசதி',
+  },
+  total_referrals: {
+    en: 'Total Referrals',
+    hi: 'कुल रेफरल',
+    bn: 'মোট রেফারেল',
+    ta: 'மொத்த பரிந்துரைகள்',
+  },
+  action_required: {
+    en: 'Action Required',
+    hi: 'कार्यवाई आवश्यक',
+    bn: 'পদক্ষেপ প্রয়োজন',
+    ta: 'நடவடிக்கை தேவை',
+  },
+  pending_triage_decision: {
+    en: 'Pending triage decision',
+    hi: 'ट्राइएज निर्णय बाकी',
+    bn: 'ট্রায়াজ সিদ্ধান্ত বাকি',
+    ta: 'ட்ரையேஜ் முடிவு நிலுவையில்',
+  },
+  emergency_transfers: {
+    en: 'Emergency Transfers',
+    hi: 'आपातकालीन स्थानांतरण',
+    bn: 'জরুরি স্থানান্তর',
+    ta: 'அவசர இடமாற்றங்கள்',
+  },
+  ambulance_en_route: {
+    en: 'Ambulance en route',
+    hi: 'एम्बुलेंस रास्ते में',
+    bn: 'অ্যাম্বুলেন্স পথে',
+    ta: 'ஆம்புலன்ஸ் வழியில்',
+  },
+  completed_discharged: {
+    en: 'Completed / Discharged',
+    hi: 'पूर्ण / छुट्टी',
+    bn: 'সম্পন্ন / ছাড়প্রাপ্ত',
+    ta: 'முடிந்தது / வெளியேற்றம்',
+  },
+  urgency_label: {
+    en: 'Urgency:',
+    hi: 'अत्यावश्यकता:',
+    bn: 'জরুরিয়ত:',
+    ta: 'அவசரத்தன்மை:',
+  },
+  search_referrals_placeholder: {
+    en: 'Search referrals by patient name, ABHA ID, originating Sub-Centre/PHC, or clinical specialty...',
+    hi: 'मरीज़ का नाम, ABHA ID, उप-केंद्र/PHC, या विशेषता से रेफरल खोजें...',
+    bn: 'রোগীর নাম, ABHA ID, উপ-কেন্দ্র/PHC বা বিশেষত্ব দিয়ে রেফারেল খুঁজুন...',
+    ta: 'நோயாளி பெயர், ABHA ID, துணை மையம்/PHC அல்லது சிறப்பு மூலம் தேடவும்...',
+  },
+  no_referrals_filter: {
+    en: 'No Referrals Matching Filter',
+    hi: 'कोई रेफरल नहीं मिला',
+    bn: 'কোনো রেফারেল পাওয়া যায়নি',
+    ta: 'வடிகட்டிக்கு பொருந்தும் பரிந்துரைகள் இல்லை',
+  },
+  care_escalation_pathway: {
+    en: 'Care Escalation Pathway',
+    hi: 'देखभाल वृद्धि मार्ग',
+    bn: 'পরিচর্যা বৃদ্ধির পথ',
+    ta: 'பராமரிப்பு உயர்வு பாதை',
+  },
+  specialty_required: {
+    en: 'Specialty:',
+    hi: 'विशेषता:',
+    bn: 'বিশেষত্ব:',
+    ta: 'சிறப்பு:',
+  },
+  pre_arrival_video_call: {
+    en: 'Pre-Arrival Video Call',
+    hi: 'पहले आने पर वीडियो कॉल',
+    bn: 'আগমনের আগে ভিডিও কল',
+    ta: 'வருகைக்கு முன் காணொலி அழைப்பு',
+  },
+  issue_rx: {
+    en: 'Issue Rx',
+    hi: 'पर्चा जारी करें',
+    bn: 'প্রেসক্রিপশন দিন',
+    ta: 'மருந்துச் சீட்டு கொடுக்கவும்',
+  },
+  accept_referral: {
+    en: 'Accept Referral & Triage',
+    hi: 'रेफरल स्वीकार करें व ट्राइएज करें',
+    bn: 'রেফারেল গ্রহণ করুন ও ট্রায়াজ করুন',
+    ta: 'பரிந்துரையை ஏற்று ட்ரையேஜ் செய்',
+  },
+  discharge_counter_referral: {
+    en: 'Discharge & Counter-Referral',
+    hi: 'छुट्टी व काउंटर-रेफरल',
+    bn: 'ছাড় ও কাউন্টার-রেফারেল',
+    ta: 'வெளியேற்றம் மற்றும் பதில்-பரிந்துரை',
+  },
+  allocated_bed_token: {
+    en: 'Allocated Inpatient Bed / OPD Priority Token',
+    hi: 'आवंटित बेड / OPD प्राथमिकता टोकन',
+    bn: 'বরাদ্দ বেড / OPD অগ্রাধিকার টোকেন',
+    ta: 'ஒதுக்கப்பட்ட படுக்கை / OPD முன்னுரிமை டோக்கன்',
+  },
+  confirm_accept_alert_spoke: {
+    en: 'Confirm Acceptance & Alert Spoke',
+    hi: 'स्वीकृति पुष्टि करें व स्पोक को सूचित करें',
+    bn: 'গ্রহণ নিশ্চিত করুন ও স্পোক জানান',
+    ta: 'ஏற்புதலை உறுதிப்படுத்தி கிளைக்கு அறிவிக்கவும்',
+  },
+  confirm_discharge_close_loop: {
+    en: 'Confirm Discharge & Close Loop',
+    hi: 'छुट्टी पुष्टि करें व लूप बंद करें',
+    bn: 'ছাড় নিশ্চিত করুন ও লুপ বন্ধ করুন',
+    ta: 'வெளியேற்றத்தை உறுதிப்படுத்தி சுழற்சியை மூடவும்',
+  },
+  status_initiated: {
+    en: 'Action Needed: Pending Review',
+    hi: 'कार्यवाई आवश्यक: समीक्षा बाकी',
+    bn: 'পদক্ষেপ দরকার: পর্যালোচনা বাকি',
+    ta: 'நடவடிக்கை தேவை: மதிப்பாய்வு நிலுவையில்',
+  },
+  status_accepted: {
+    en: 'Accepted (HDU / Token Assigned)',
+    hi: 'स्वीकृत (HDU / टोकन सौंपा)',
+    bn: 'গৃহীত (HDU / টোকেন বরাদ্দ)',
+    ta: 'ஏற்கப்பட்டது (HDU / டோக்கன் ஒதுக்கப்பட்டது)',
+  },
+  status_specialist_review: {
+    en: 'Specialist Review En Route',
+    hi: 'विशेषज्ञ समीक्षा रास्ते में',
+    bn: 'বিশেষজ্ঞ পর্যালোচনা পথে',
+    ta: 'நிபுணர் மதிப்பாய்வு வழியில்',
+  },
+  status_completed: {
+    en: 'Completed & Counter-Referred',
+    hi: 'पूर्ण व काउंटर-रेफर',
+    bn: 'সম্পন্ন ও কাউন্টার-রেফার',
+    ta: 'முடிந்தது மற்றும் பதில்-பரிந்துரை',
+  },
+  dispatch_108: {
+    en: 'Dispatch 108',
+    hi: '108 भेजें',
+    bn: '108 পাঠান',
+    ta: '108 அனுப்பு',
+  },
+  self_transport_unconfirmed: {
+    en: 'Self / Transport Unconfirmed',
+    hi: 'स्वयं / परिवहन अपुष्ट',
+    bn: 'নিজে / পরিবহন অনিশ্চিত',
+    ta: 'சொந்தமாக / போக்குவரத்து உறுதிப்படவில்லை',
+  },
+  initiated_date: {
+    en: 'Initiated:',
+    hi: 'शुरू हुआ:',
+    bn: 'শুরু হয়েছে:',
+    ta: 'தொடங்கியது:',
+  },
+
+  // EPrescriptionModal
+  rx_generator_title: {
+    en: 'ABDM e-Prescription Generator',
+    hi: 'ABDM डिजिटल पर्चा जनरेटर',
+    bn: 'ABDM ডিজিটাল প্রেসক্রিপশন',
+    ta: 'ABDM மின்-மருந்துச் சீட்டு உருவாக்கி',
+  },
+  interactive_editor: {
+    en: 'Interactive Editor',
+    hi: 'संपादक',
+    bn: 'সম্পাদক',
+    ta: 'தொடர்புடைய எடிட்டர்',
+  },
+  rx_slip_preview: {
+    en: 'Rx Slip Preview',
+    hi: 'पर्चा पूर्वावलोकन',
+    bn: 'প্রেসক্রিপশন পূর্বদর্শন',
+    ta: 'மருந்துச் சீட்டு முன்னோட்டம்',
+  },
+  voice_rx_stop: {
+    en: 'Stop Voice',
+    hi: 'बोलना रोकें',
+    bn: 'কথা থামান',
+    ta: 'குரலை நிறுத்து',
+  },
+  voice_rx_listen: {
+    en: '🔊 Voice Rx (Listen)',
+    hi: '🔊 Voice Rx (बोलकर सुनें)',
+    bn: '🔊 ভয়েস Rx (শুনুন)',
+    ta: '🔊 குரல் Rx (கேளுங்கள்)',
+  },
+  target_patient: {
+    en: 'Target Patient',
+    hi: 'मरीज़ चुनें',
+    bn: 'রোগী নির্বাচন করুন',
+    ta: 'நோயாளியை தேர்ந்தெடு',
+  },
+  latest_spot_vitals: {
+    en: 'Latest Spot Vitals:',
+    hi: 'ताज़ा वाइटल्स:',
+    bn: 'সর্বশেষ ভাইটালস:',
+    ta: 'சமீபத்திய உயிர்நலன்:',
+  },
+  clinical_presets: {
+    en: '1-Click Rural Clinical Presets',
+    hi: '1-क्लिक ग्रामीण नैदानिक प्रीसेट',
+    bn: '1-ক্লিক গ্রামীণ ক্লিনিকাল প্রিসেট',
+    ta: '1-கிளிக் கிராமப்புற மருத்துவ முன்னமைவு',
+  },
+  primary_diagnosis: {
+    en: 'Primary Clinical Diagnosis *',
+    hi: 'प्राथमिक नैदानिक निदान *',
+    bn: 'প্রাথমিক নিদান *',
+    ta: 'முதன்மை மருத்துவ நோயறிதல் *',
+  },
+  chief_symptoms: {
+    en: 'Chief Symptoms & Duration',
+    hi: 'मुख्य लक्षण और अवधि',
+    bn: 'প্রধান উপসর্গ ও সময়কাল',
+    ta: 'முக்கிய அறிகுறிகள் மற்றும் காலம்',
+  },
+  prescribed_medicines: {
+    en: 'Prescribed Medicines & Live Stock',
+    hi: 'निर्धारित दवाइयाँ व उपलब्धता',
+    bn: 'নির্ধারিত ওষুধ ও মজুদ',
+    ta: 'பரிந்துரைக்கப்பட்ட மருந்துகள் மற்றும் கையிருப்பு',
+  },
+  add_medicine: {
+    en: 'Add Medicine',
+    hi: 'दवाई जोड़ें',
+    bn: 'ওষুধ যোগ করুন',
+    ta: 'மருந்து சேர்க்கவும்',
+  },
+  advised_tests: {
+    en: 'Advised Diagnostic Tests',
+    hi: 'आवश्यक जाँचें',
+    bn: 'প্রয়োজনীয় পরীক্ষা',
+    ta: 'அறிவுறுத்தப்பட்ட சோதனைகள்',
+  },
+  dietary_advice_label: {
+    en: 'Dietary & Lifestyle Advice',
+    hi: 'आहार व जीवनशैली सलाह',
+    bn: 'খাদ্য ও জীবনধারা পরামর্শ',
+    ta: 'உணவு மற்றும் வாழ்க்கை முறை ஆலோசனை',
+  },
+  next_followup_date: {
+    en: 'Next Follow-up Date',
+    hi: 'अगली जाँच की तारीख',
+    bn: 'পরবর্তী ফলো-আপের তারিখ',
+    ta: 'அடுத்த பின்தொடர்தல் தேதி',
+  },
+  auto_enrol_tracker: {
+    en: '🔔 Auto-enrol in High-Risk Follow-Up Tracker (ASHA Alert)',
+    hi: '🔔 हाई-रिस्क फॉलो-अप ट्रैकर में स्वतः नामांकन (ASHA अलर्ट)',
+    bn: '🔔 উচ্চ-ঝুঁকি ফলো-আপ ট্র্যাকারে স্বয়ংক্রিয় নথিভুক্তি (ASHA সতর্কতা)',
+    ta: '🔔 அதி-ஆபத்து பின்தொடர்தல் கண்காணிப்பில் சேர்க்கவும் (ASHA அறிவிப்பு)',
+  },
+  print_slip: {
+    en: 'Print Slip (Ctrl+P)',
+    hi: 'प्रिंट करें (Ctrl+P)',
+    bn: 'প্রিন্ট করুন (Ctrl+P)',
+    ta: 'அச்சிடவும் (Ctrl+P)',
+  },
+  sign_push_abdm: {
+    en: 'Sign & Push to ABDM EHR',
+    hi: 'हस्ताक्षर करें व ABDM में भेजें',
+    bn: 'স্বাক্ষর করুন ও ABDM-এ পাঠান',
+    ta: 'கையொப்பமிட்டு ABDM-ல் அனுப்பவும்',
+  },
+  rx_saved_success: {
+    en: 'e-Prescription successfully signed & pushed to patient ABDM record!',
+    hi: 'पर्चा सफलतापूर्वक हस्ताक्षरित और ABDM रिकॉर्ड में जोड़ा गया!',
+    bn: 'ই-প্রেসক্রিপশন সফলভাবে স্বাক্ষরিত ও ABDM রেকর্ডে যুক্ত!',
+    ta: 'மின்-மருந்துச் சீட்டு வெற்றிகரமாக கையொப்பமிட்டு ABDM பதிவில் சேர்க்கப்பட்டது!',
+  },
+  close: {
+    en: 'Close',
+    hi: 'बंद करें',
+    bn: 'বন্ধ করুন',
+    ta: 'மூடவும்',
+  },
+  frequency_label: {
+    en: 'Frequency',
+    hi: 'खुराक की आवृत्ति',
+    bn: 'খুরাকের মাত্রা',
+    ta: 'அளவு அதிர்வெண்',
+  },
+  timing_label: {
+    en: 'Timing',
+    hi: 'कब लें',
+    bn: 'কখন নেবেন',
+    ta: 'எப்போது சாப்பிட வேண்டும்',
+  },
+  duration_label: {
+    en: 'Duration (Days)',
+    hi: 'अवधि (दिन)',
+    bn: 'মেয়াদ (দিন)',
+    ta: 'கால அளவு (நாட்கள்)',
+  },
+  no_medicines_yet: {
+    en: 'No medicines added yet. Click "Add Medicine" or select a clinical preset above.',
+    hi: 'अभी कोई दवाई नहीं जोड़ी। "दवाई जोड़ें" पर क्लिक करें या ऊपर प्रीसेट चुनें।',
+    bn: 'এখনো কোনো ওষুধ যোগ করা হয়নি। "ওষুধ যোগ করুন" ক্লিক করুন বা প্রিসেট বেছে নিন।',
+    ta: 'இன்னும் மருந்துகள் சேர்க்கப்படவில்லை. "மருந்து சேர்க்கவும்" கிளிக் செய்யவும்.',
+  },
+  quick_followup: {
+    en: 'Quick:',
+    hi: 'त्वरित:',
+    bn: 'দ্রুত:',
+    ta: 'விரைவான:',
+  },
+
+  // GovtSchemesSection
+  sync_gazettes: {
+    en: 'Sync Latest Gazettes',
+    hi: 'ताज़ा गजट सिंक करें',
+    bn: 'সর্বশেষ গেজেট সিঙ্ক করুন',
+    ta: 'சமீபத்திய அரசிதழ்களை ஒத்திசைக்கவும்',
+  },
+  syncing: {
+    en: 'Syncing...',
+    hi: 'सिंक हो रहा है...',
+    bn: 'সিঙ্ক হচ্ছে...',
+    ta: 'ஒத்திசைக்கிறது...',
+  },
+  publish_new_scheme: {
+    en: 'Publish New Scheme',
+    hi: 'नई योजना जोड़ें',
+    bn: 'নতুন প্রকল্প প্রকাশ করুন',
+    ta: 'புதிய திட்டத்தை வெளியிடவும்',
+  },
+  eligibility_calculator: {
+    en: 'Instant Scheme Eligibility Calculator',
+    hi: 'त्वरित पात्रता जाँच',
+    bn: 'তাৎক্ষণিক পাত্রতা ক্যালকুলেটর',
+    ta: 'உடனடி தகுதி கணக்கிடும் கருவி',
+  },
+  show_all: {
+    en: 'Show All',
+    hi: 'सभी दिखाएँ',
+    bn: 'সব দেখান',
+    ta: 'அனைத்தையும் காட்டு',
+  },
+  key_eligibility: {
+    en: 'Key Eligibility:',
+    hi: 'मुख्य पात्रता:',
+    bn: 'মূল পাত্রতা:',
+    ta: 'முக்கிய தகுதி:',
+  },
+  eligibility_docs: {
+    en: 'Eligibility & Docs',
+    hi: 'पात्रता व दस्तावेज़',
+    bn: 'পাত্রতা ও কাগজপত্র',
+    ta: 'தகுதி மற்றும் ஆவணங்கள்',
+  },
+  visit_official_portal: {
+    en: 'Visit Official Portal',
+    hi: 'आधिकारिक पोर्टल देखें',
+    bn: 'অফিশিয়াল পোর্টাল দেখুন',
+    ta: 'அதிகாரப்பூர்வ தளத்தை பார்வையிடவும்',
+  },
+  toll_free_helpline: {
+    en: 'Toll-Free Helpline:',
+    hi: 'टोल-फ्री हेल्पलाइन:',
+    bn: 'টোল-ফ্রি হেল্পলাইন:',
+    ta: 'இலவச உதவி எண்:',
+  },
+  copy_list: {
+    en: 'Copy List',
+    hi: 'सूची कॉपी करें',
+    bn: 'তালিকা কপি করুন',
+    ta: 'பட்டியலை நகலெடு',
+  },
+  copied: {
+    en: 'Copied',
+    hi: 'कॉपी हो गया',
+    bn: 'কপি হয়েছে',
+    ta: 'நகலெடுக்கப்பட்டது',
+  },
+  publish_to_network: {
+    en: 'Publish to Network',
+    hi: 'नेटवर्क में प्रकाशित करें',
+    bn: 'নেটওয়ার্কে প্রকাশ করুন',
+    ta: 'நெட்வொர்க்கில் வெளியிடவும்',
+  },
+
+  // NearbyHospitalsSection
+  hospital_near_me_title: {
+    en: 'Hospitals & Health Centres Near Me',
+    hi: 'नजदीकी अस्पताल व स्वास्थ्य केंद्र',
+    bn: 'কাছের হাসপাতাল ও স্বাস্থ্য কেন্দ্র',
+    ta: 'அருகிலுள்ள மருத்துவமனைகள்',
+  },
+  current_location: {
+    en: 'Current Location:',
+    hi: 'वर्तमान स्थान:',
+    bn: 'বর্তমান অবস্থান:',
+    ta: 'தற்போதைய இடம்:',
+  },
+  tier_label: {
+    en: 'Tier:',
+    hi: 'श्रेणी:',
+    bn: 'স্তর:',
+    ta: 'தரம்:',
+  },
+  bed_availability: {
+    en: 'Bed Availability (Demo)',
+    hi: 'बेड उपलब्धता (डेमो)',
+    bn: 'বেড উপলব্ধতা (ডেমো)',
+    ta: 'படுக்கை கிடைக்கும் (டெமோ)',
+  },
+  call_desk: {
+    en: 'Call Desk',
+    hi: 'कॉल करें',
+    bn: 'ফোন করুন',
+    ta: 'அழைப்பு மேசை',
+  },
+  view_on_map: {
+    en: 'View on Map',
+    hi: 'मैप पर देखें',
+    bn: 'মানচিত্রে দেখুন',
+    ta: 'வரைபடத்தில் காண்க',
+  },
+  no_facilities_found: {
+    en: 'No Facilities Found',
+    hi: 'कोई अस्पताल नहीं मिला',
+    bn: 'কোনো হাসপাতাল পাওয়া যায়নি',
+    ta: 'வசதிகள் எதுவும் கிடைக்கவில்லை',
+  },
+
+  // DoctorDashboard - Availability Toggle
+  status_available: {
+    en: 'Available',
+    hi: 'उपलब्ध',
+    bn: 'উপলব্ধ',
+    ta: 'கிடைக்கிறார்',
+  },
+  status_busy: {
+    en: 'Busy',
+    hi: 'व्यस्त',
+    bn: 'ব্যস্ত',
+    ta: 'பிஸியாக உள்ளார்',
+  },
+  status_offline: {
+    en: 'Offline',
+    hi: 'ऑफलाइन',
+    bn: 'অফলাইন',
+    ta: 'ஆஃப்லைன்',
+  },
+  configure_availability: {
+    en: 'Configure Doctor Availability & Spokes',
+    hi: 'डॉक्टर उपलब्धता व स्पोक कॉन्फ़िगर करें',
+    bn: 'ডাক্তারের প্রাপ্যতা ও স্পোক কনফিগার করুন',
+    ta: 'மருத்துவர் கிடைக்கும் தன்மை மற்றும் கிளைகளை அமைக்கவும்',
+  },
+  status_note_presets: {
+    en: 'Status Note Presets',
+    hi: 'स्थिति नोट प्रीसेट',
+    bn: 'স্ট্যাটাস নোট প্রিসেট',
+    ta: 'நிலை குறிப்பு முன்னமைவுகள்',
+  },
+  virtual_spoke_coverage: {
+    en: 'Virtual Spoke Coverage (Specialist Sharing)',
+    hi: 'वर्चुअल स्पोक कवरेज (विशेषज्ञ साझाकरण)',
+    bn: 'ভার্চুয়াল স্পোক কভারেজ (বিশেষজ্ঞ শেয়ারিং)',
+    ta: 'மெய்நிகர் கிளை கவரேஜ் (நிபுணர் பகிர்வு)',
+  },
+  virtually_covering: {
+    en: 'Virtually Covering',
+    hi: 'वर्चुअली कवर कर रहे',
+    bn: 'ভার্চুয়ালি কভার করছে',
+    ta: 'மெய்நிகரில் கவர் செய்கிறார்',
+  },
+  spokes_label: {
+    en: 'Spokes:',
+    hi: 'स्पोक:',
+    bn: 'স্পোক:',
+    ta: 'கிளைகள்:',
+  },
+  save_broadcast_status: {
+    en: 'Save & Broadcast Status',
+    hi: 'सहेजें व स्थिति प्रसारित करें',
+    bn: 'সংরক্ষণ করুন ও স্ট্যাটাস সম্প্রচার করুন',
+    ta: 'சேமித்து நிலையை ஒளிபரப்பவும்',
+  },
+  register_patient: {
+    en: 'Register Patient',
+    hi: 'मरीज़ पंजीकृत करें',
+    bn: 'রোগী নথিভুক্ত করুন',
+    ta: 'நோயாளியை பதிவு செய்யவும்',
+  },
+  waiting_in_queue: {
+    en: 'Waiting in Queue',
+    hi: 'कतार में प्रतीक्षारत',
+    bn: 'লাইনে অপেক্ষায়',
+    ta: 'வரிசையில் காத்திருக்கிறார்',
+  },
+  high_risk_followups: {
+    en: 'High-Risk Follow-Ups',
+    hi: 'हाई-रिस्क फॉलो-अप',
+    bn: 'উচ্চ-ঝুঁকি ফলো-আপ',
+    ta: 'அதி-ஆபத்து பின்தொடர்தல்',
+  },
+  connected_subcentres: {
+    en: 'Connected Sub-Centres',
+    hi: 'जुड़े उप-केंद्र',
+    bn: 'সংযুক্ত উপ-কেন্দ্র',
+    ta: 'இணைக்கப்பட்ட துணை மையங்கள்',
+  },
+  travel_saved: {
+    en: 'Travel Saved Today',
+    hi: 'आज की यात्रा बचत',
+    bn: 'আজকের যাত্রা সাশ্রয়',
+    ta: 'இன்று சேமிக்கப்பட்ட பயணம்',
+  },
+  telehealth_queue_tab: {
+    en: 'Assisted Telehealth Queue',
+    hi: 'टेलीहेल्थ कतार',
+    bn: 'টেলিহেলথ কিউ',
+    ta: 'தொலைமருத்துவ வரிசை',
+  },
+  incoming_referral_inbox_tab: {
+    en: 'Incoming Referral Inbox',
+    hi: 'रेफरल इनबॉक्स',
+    bn: 'রেফারেল ইনবক্স',
+    ta: 'வரும் பரிந்துரை இன்பாக்ஸ்',
+  },
+  quality_reviews_tab: {
+    en: 'Quality & Reviews',
+    hi: 'गुणवत्ता व समीक्षा',
+    bn: 'গুণমান ও পর্যালোচনা',
+    ta: 'தரம் மற்றும் மதிப்புரைகள்',
+  },
+  high_risk_followup_tab: {
+    en: 'High-Risk Follow-Ups',
+    hi: 'हाई-रिस्क फॉलो-अप',
+    bn: 'উচ্চ-ঝুঁকি ফলো-আপ',
+    ta: 'அதி-ஆபத்து பின்தொடர்தல்',
+  },
+  high_risk_rural_cohort: {
+    en: 'High-Risk Rural Cohort',
+    hi: 'हाई-रिस्क ग्रामीण समूह',
+    bn: 'উচ্চ-ঝুঁকি গ্রামীণ গোষ্ঠী',
+    ta: 'அதி-ஆபத்து கிராமப்புற குழு',
+  },
+  open_tracker: {
+    en: 'Open Tracker →',
+    hi: 'ट्रैकर खोलें →',
+    bn: 'ট্র্যাকার খুলুন →',
+    ta: 'கண்காணிப்பை திறக்கவும் →',
+  },
+  longitudinal_health_records: {
+    en: 'Longitudinal Health Records',
+    hi: 'दीर्घकालिक स्वास्थ्य रिकॉर्ड',
+    bn: 'দীর্ঘমেয়াদী স্বাস্থ্য রেকর্ড',
+    ta: 'நீண்டகால சுகாதார பதிவுகள்',
+  },
+
+  // EPrescriptionModal
+  rx_modal_title: {
+    en: 'ABDM e-Prescription Generator',
+    hi: 'ABDM ई-पर्चा जनरेटर',
+    bn: 'ABDM ই-প্রেসক্রিপশন জেনারেটর',
+    ta: 'ABDM மின்-மருந்துச்சீட்டு உருவாக்கி',
+  },
+  rx_prescribing_physician: {
+    en: 'Prescribing Physician:',
+    hi: 'पर्चा लिखने वाले चिकित्सक:',
+    bn: 'প্রেসক্রিপশন চিকিৎসক:',
+    ta: 'மருந்து பரிந்துரைக்கும் மருத்துவர்:',
+  },
+  rx_interactive_editor: {
+    en: 'Interactive Editor',
+    hi: 'इंटरैक्टिव एडिटर',
+    bn: 'ইন্টারেক্টিভ এডিটর',
+    ta: 'இடைவினை தொகுப்பான்',
+  },
+  rx_slip_preview: {
+    en: 'Rx Slip Preview',
+    hi: 'पर्चा पूर्वावलोकन',
+    bn: 'প্রেসক্রিপশন প্রিভিউ',
+    ta: 'மருந்துச்சீட்டு மாதிரிக்காட்சி',
+  },
+  rx_target_patient: {
+    en: 'Target Patient (रोगी का चयन)',
+    hi: 'रोगी का चयन',
+    bn: 'রোগী নির্বাচন',
+    ta: 'நோயாளி தேர்வு',
+  },
+  rx_subcentre_spoke: {
+    en: 'Sub-Centre / Kiosk spoke',
+    hi: 'उप-केंद्र / कियोस्क स्पोक',
+    bn: 'উপ-কেন্দ্র / কিয়স্ক স্পোক',
+    ta: 'துணை-மையம் / கியோஸ்க் ஸ்போக்',
+  },
+  rx_latest_vitals: {
+    en: 'Latest Spot Vitals:',
+    hi: 'ताज़ा वाइटल्स:',
+    bn: 'সর্বশেষ ভাইটালস:',
+    ta: 'சமீபத்திய உயிர்க்குறிகள்:',
+  },
+  rx_clinical_presets: {
+    en: '1-Click Rural Clinical Presets (त्वरित बीमारी प्रोटोकॉल)',
+    hi: '1-क्लिक ग्रामीण चिकित्सा प्रीसेट',
+    bn: '1-ক্লিক গ্রামীণ ক্লিনিকাল প্রিসেট',
+    ta: '1-கிளிக் கிராமப்புற மருத்துவ முன்னமைவுகள்',
+  },
+  rx_diagnosis_label: {
+    en: 'Primary Clinical Diagnosis (निदान) *',
+    hi: 'प्राथमिक निदान *',
+    bn: 'প্রাথমিক রোগ নির্ণয় *',
+    ta: 'முதன்மை நோயறிதல் *',
+  },
+  rx_symptoms_label: {
+    en: 'Chief Symptoms & Duration (लक्षण)',
+    hi: 'मुख्य लक्षण व अवधि',
+    bn: 'প্রধান উপসর্গ ও সময়কাল',
+    ta: 'முக்கிய அறிகுறிகள் மற்றும் காலம்',
+  },
+  rx_medicines_label: {
+    en: 'Prescribed Medicines & Live Stock (दवाइयाँ व उपलब्धता)',
+    hi: 'दवाइयाँ व उपलब्धता',
+    bn: 'নির্ধারিত ওষুধ ও স্টক',
+    ta: 'பரிந்துரைக்கப்பட்ட மருந்துகள் மற்றும் கையிருப்பு',
+  },
+  rx_add_medicine: {
+    en: 'Add Medicine',
+    hi: 'दवाई जोड़ें',
+    bn: 'ওষুধ যোগ করুন',
+    ta: 'மருந்து சேர்க்கவும்',
+  },
+  rx_no_medicines: {
+    en: 'No medicines added yet. Click "Add Medicine" or select a clinical preset above.',
+    hi: 'अभी कोई दवाई नहीं जोड़ी गई। "दवाई जोड़ें" पर क्लिक करें या ऊपर प्रीसेट चुनें।',
+    bn: 'এখনো কোনো ওষুধ যোগ করা হয়নি। "ওষুধ যোগ করুন" ক্লিক করুন।',
+    ta: 'இன்னும் மருந்துகள் சேர்க்கப்படவில்லை. "மருந்து சேர்க்கவும்" கிளிக் செய்யவும்.',
+  },
+  rx_frequency: {
+    en: 'Frequency (खुराक)',
+    hi: 'खुराक',
+    bn: 'মাত্রা',
+    ta: 'அளவு',
+  },
+  rx_timing: {
+    en: 'Timing (कब लें)',
+    hi: 'कब लें',
+    bn: 'কখন খাবেন',
+    ta: 'எப்போது எடுக்க வேண்டும்',
+  },
+  rx_duration: {
+    en: 'Duration (दिन)',
+    hi: 'अवधि (दिन)',
+    bn: 'সময়কাল (দিন)',
+    ta: 'காலம் (நாட்கள்)',
+  },
+  rx_days: {
+    en: 'Days',
+    hi: 'दिन',
+    bn: 'দিন',
+    ta: 'நாட்கள்',
+  },
+  rx_tests_label: {
+    en: 'Advised Diagnostic Tests (आवश्यक जाँचें)',
+    hi: 'आवश्यक जाँचें',
+    bn: 'পরামর্শকৃত পরীক্ষা',
+    ta: 'பரிந்துரைக்கப்பட்ட பரிசோதனைகள்',
+  },
+  rx_add_test: {
+    en: 'Add',
+    hi: 'जोड़ें',
+    bn: 'যোগ করুন',
+    ta: 'சேர்',
+  },
+  rx_dietary_label: {
+    en: 'Dietary & Lifestyle Advice (आहार व सावधानियां)',
+    hi: 'आहार व सावधानियां',
+    bn: 'খাদ্য ও জীবনযাত্রার পরামর্শ',
+    ta: 'உணவு மற்றும் வாழ்க்கை முறை ஆலோசனை',
+  },
+  rx_followup_label: {
+    en: 'Next Follow-up Date (अगली जाँच की तारीख)',
+    hi: 'अगली जाँच की तारीख',
+    bn: 'পরবর্তী ফলো-আপ তারিখ',
+    ta: 'அடுத்த பின்தொடர் தேதி',
+  },
+  rx_quick: {
+    en: 'Quick:',
+    hi: 'शीघ्र:',
+    bn: 'দ্রুত:',
+    ta: 'விரைவு:',
+  },
+  rx_enrol_tracker: {
+    en: '🔔 Auto-enrol in High-Risk Follow-Up Tracker (ASHA Alert)',
+    hi: '🔔 हाई-रिस्क फॉलो-अप ट्रैकर में ऑटो-नामांकन (ASHA अलर्ट)',
+    bn: '🔔 উচ্চ-ঝুঁকি ফলো-আপ ট্র্যাকারে স্বয়ংক্রিয় নথিভুক্তি',
+    ta: '🔔 அதி-ஆபத்து பின்தொடர் கண்காணிப்பில் தானியங்கி பதிவு',
+  },
+  rx_patient_details: {
+    en: 'Patient Details',
+    hi: 'रोगी विवरण',
+    bn: 'রোগীর বিবরণ',
+    ta: 'நோயாளி விவரங்கள்',
+  },
+  rx_consulting_physician: {
+    en: 'Consulting Physician',
+    hi: 'परामर्शदाता चिकित्सक',
+    bn: 'পরামর্শদাতা চিকিৎসক',
+    ta: 'ஆலோசனை மருத்துவர்',
+  },
+  rx_digital_signature: {
+    en: 'Digital Signature Verified',
+    hi: 'डिजिटल हस्ताक्षर सत्यापित',
+    bn: 'ডিজিটাল স্বাক্ষর যাচাই করা হয়েছে',
+    ta: 'டிஜிட்டல் கையொப்பம் சரிபார்க்கப்பட்டது',
+  },
+  rx_success_message: {
+    en: 'e-Prescription successfully signed & pushed to patient ABDM record!',
+    hi: 'ई-पर्चा सफलतापूर्वक ABDM रिकॉर्ड में भेजा गया!',
+    bn: 'ই-প্রেসক্রিপশন সফলভাবে ABDM রেকর্ডে পাঠানো হয়েছে!',
+    ta: 'மின்-மருந்துச்சீட்டு ABDM பதிவுக்கு அனுப்பப்பட்டது!',
+  },
+  rx_close: {
+    en: 'Close',
+    hi: 'बंद करें',
+    bn: 'বন্ধ করুন',
+    ta: 'மூடு',
+  },
+  rx_print_slip: {
+    en: 'Print Slip (Ctrl+P)',
+    hi: 'पर्चा प्रिंट करें (Ctrl+P)',
+    bn: 'স্লিপ প্রিন্ট করুন (Ctrl+P)',
+    ta: 'சீட்டு அச்சிடு (Ctrl+P)',
+  },
+  rx_sign_push: {
+    en: 'Sign & Push to ABDM EHR',
+    hi: 'साइन करें व ABDM EHR में भेजें',
+    bn: 'সাইন করুন এবং ABDM EHR-এ পাঠান',
+    ta: 'கையொப்பமிட்டு ABDM EHR-க்கு அனுப்பு',
+  },
+
+  // GovtSchemesSection
+  schemes_title: {
+    en: 'Government Health Schemes',
+    hi: 'सरकारी स्वास्थ्य योजनाएँ',
+    bn: 'সরকারি স্বাস্থ্য প্রকল্প',
+    ta: 'அரசு சுகாதார திட்டங்கள்',
+  },
+  schemes_subtitle: {
+    en: 'Eligible benefits & entitlements for rural families under central & state schemes.',
+    hi: 'ग्रामीण परिवारों के लिए केंद्र व राज्य योजनाओं के तहत पात्र लाभ।',
+    bn: 'কেন্দ্র ও রাজ্য প্রকল্পের অধীনে গ্রামীণ পরিবারের জন্য যোগ্য সুবিধা।',
+    ta: 'மத்திய மற்றும் மாநில திட்டங்களின் கீழ் கிராமப்புற குடும்பங்களுக்கான தகுதியான நலன்கள்.',
+  },
+  schemes_search_placeholder: {
+    en: 'Search schemes by name, benefit or category...',
+    hi: 'योजना का नाम, लाभ या श्रेणी से खोजें...',
+    bn: 'প্রকল্পের নাম, সুবিধা বা বিভাগ দিয়ে খুঁজুন...',
+    ta: 'திட்டத்தின் பெயர், நலன் அல்லது வகை மூலம் தேடுங்கள்...',
+  },
+  schemes_all: {
+    en: 'All Schemes',
+    hi: 'सभी योजनाएँ',
+    bn: 'সমস্ত প্রকল্প',
+    ta: 'அனைத்து திட்டங்கள்',
+  },
+  schemes_coverage: {
+    en: 'Coverage:',
+    hi: 'कवरेज:',
+    bn: 'কভারেজ:',
+    ta: 'பாதுகாப்பு:',
+  },
+  schemes_eligibility: {
+    en: 'Eligibility:',
+    hi: 'पात्रता:',
+    bn: 'যোগ্যতা:',
+    ta: 'தகுதி:',
+  },
+  schemes_benefits: {
+    en: 'Key Benefits:',
+    hi: 'मुख्य लाभ:',
+    bn: 'মূল সুবিধা:',
+    ta: 'முக்கிய நன்மைகள்:',
+  },
+  schemes_how_to_avail: {
+    en: 'How to Avail:',
+    hi: 'लाभ कैसे लें:',
+    bn: 'কিভাবে পাবেন:',
+    ta: 'எவ்வாறு பெறுவது:',
+  },
+  schemes_check_eligibility: {
+    en: 'Check Eligibility',
+    hi: 'पात्रता जाँचें',
+    bn: 'যোগ্যতা যাচাই করুন',
+    ta: 'தகுதியை சரிபார்க்கவும்',
+  },
+  schemes_apply_now: {
+    en: 'Apply Now',
+    hi: 'अभी आवेदन करें',
+    bn: 'এখনই আবেদন করুন',
+    ta: 'இப்போது விண்ணப்பிக்கவும்',
+  },
+
+  // NearbyHospitalsSection
+  hospitals_title: {
+    en: 'Hospitals Near Me',
+    hi: 'मेरे पास के अस्पताल',
+    bn: 'আমার কাছের হাসপাতাল',
+    ta: 'எனக்கு அருகிலுள்ள மருத்துவமனைகள்',
+  },
+  hospitals_search_placeholder: {
+    en: 'Search hospitals by name, specialty, or district...',
+    hi: 'अस्पताल का नाम, विशेषज्ञता या जिला से खोजें...',
+    bn: 'হাসপাতালের নাম, বিশেষত্ব বা জেলা দিয়ে খুঁজুন...',
+    ta: 'மருத்துவமனையின் பெயர், சிறப்பு அல்லது மாவட்டம் மூலம் தேடுங்கள்...',
+  },
+  hospitals_all_facilities: {
+    en: 'All Facilities',
+    hi: 'सभी सुविधाएँ',
+    bn: 'সমস্ত সুবিধা',
+    ta: 'அனைத்து வசதிகள்',
+  },
+  hospitals_distance: {
+    en: 'Distance:',
+    hi: 'दूरी:',
+    bn: 'দূরত্ব:',
+    ta: 'தூரம்:',
+  },
+  hospitals_available_beds: {
+    en: 'Available Beds:',
+    hi: 'उपलब्ध बेड:',
+    bn: 'উপলব্ধ শয্যা:',
+    ta: 'கிடைக்கும் படுக்கைகள்:',
+  },
+  hospitals_call_helpdesk: {
+    en: 'Call Helpdesk',
+    hi: 'हेल्पडेस्क कॉल करें',
+    bn: 'হেল্পডেস্ক কল করুন',
+    ta: 'உதவி மையத்தை அழைக்கவும்',
+  },
+  hospitals_get_directions: {
+    en: 'Get Directions',
+    hi: 'दिशा-निर्देश पाएं',
+    bn: 'দিকনির্দেশ পান',
+    ta: 'வழிகாட்டி பெறுங்கள்',
+  },
+  hospitals_view_map: {
+    en: 'View on Map',
+    hi: 'मैप पर देखें',
+    bn: 'মানচিত্রে দেখুন',
+    ta: 'வரைபடத்தில் பார்க்கவும்',
+  },
+  hospitals_specialties: {
+    en: 'Specialties:',
+    hi: 'विशेषज्ञताएँ:',
+    bn: 'বিশেষত্ব:',
+    ta: 'சிறப்புகள்:',
+  },
+  hospitals_emergency_24x7: {
+    en: '24×7 Emergency',
+    hi: '24×7 आपातकालीन',
+    bn: '24×7 জরুরি',
+    ta: '24×7 அவசரம்',
+  },
+  hospitals_no_results: {
+    en: 'No hospitals found matching your search.',
+    hi: 'आपकी खोज से मेल खाता कोई अस्पताल नहीं मिला।',
+    bn: 'আপনার অনুসন্ধানের সাথে মেলে এমন কোনো হাসপাতাল পাওয়া যায়নি।',
+    ta: 'உங்கள் தேடலுக்கு பொருந்தும் மருத்துவமனைகள் எதுவும் காணப்படவில்லை.',
+  },
+};
+
+export const getTranslation = (key: string, lang: LanguageCode): string => {
+  if (translations[key] && translations[key][lang]) {
+    return translations[key][lang];
+  }
+  if (translations[key] && translations[key].en) {
+    return translations[key].en;
+  }
+  return key;
+};
