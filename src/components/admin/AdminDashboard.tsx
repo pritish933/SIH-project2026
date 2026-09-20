@@ -17,6 +17,8 @@ import {
   RefreshCw,
   Send,
   Download,
+  Zap,
+  Building2,
 } from 'lucide-react';
 import { FACILITY_TIERS } from '../../data/mockData';
 
@@ -28,6 +30,9 @@ export function AdminDashboard() {
     telehealthQueue,
     setIsMedicineModalOpen,
     requestMedicineRestock,
+    setIsHospitalReceptionViewOpen,
+    setIsCoordinationModalOpen,
+    activeCoordinationSession,
     t,
   } = useApp();
 
@@ -69,13 +74,31 @@ export function AdminDashboard() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setIsHospitalReceptionViewOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            title="Hospital Emergency Casualty Reception & Bed Reservation Desk"
+          >
+            <Building2 className="w-3.5 h-3.5" />
+            <span>Casualty Reception Desk</span>
+          </button>
+
+          <button
+            onClick={() => setIsCoordinationModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+            title="Emergency Healthcare Coordination Hub"
+          >
+            <Zap className="w-3.5 h-3.5 fill-white" />
+            <span>{activeCoordinationSession ? '108 War Room (Active)' : '108 Coordination'}</span>
+          </button>
+
           <button
             onClick={() => setIsMedicineModalOpen(true)}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
           >
             <Pill className="w-3.5 h-3.5" />
-            <span>District Drug Stock Registry</span>
+            <span>District Drug Registry</span>
           </button>
         </div>
       </div>

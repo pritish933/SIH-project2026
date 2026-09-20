@@ -70,7 +70,7 @@ export function LoginModal({ isOpen, onClose, canDismiss = true }: LoginModalPro
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-300" />
             <span>Ayushman Bharat Digital Health Gateway</span>
           </div>
-          <h2 className="text-2xl font-bold tracking-tight">SwasthyaSetu Portal Login</h2>
+          <h2 className="text-2xl font-bold tracking-tight">InstaCure Portal Login</h2>
           <p className="text-xs text-emerald-100/90 mt-1">
             Access secure longitudinal health records, real-time queues, and rural teleconsultation tools.
           </p>

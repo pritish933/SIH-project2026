@@ -14,6 +14,8 @@ import { LoginModal } from './components/auth/LoginModal';
 import { EmergencyAlertBanner } from './components/common/EmergencyAlertBanner';
 import { AmbulanceBookingModal } from './components/ambulance/AmbulanceBookingModal';
 import { ConsultationFeedbackModal } from './components/feedback/ConsultationFeedbackModal';
+import { EmergencyCoordinationModal } from './components/emergency/EmergencyCoordinationModal';
+import { HospitalReceptionEmergencyDesk } from './components/emergency/HospitalReceptionEmergencyDesk';
 import {
   HeartPulse,
   ShieldCheck,
@@ -55,10 +57,10 @@ function MainAppContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-md bg-emerald-600 flex items-center justify-center text-white text-[11px] font-bold">
-              SS
+              IC
             </div>
             <div>
-              <span className="font-bold text-stone-800">SwasthyaSetu Rural Telehealth Network</span>
+              <span className="font-bold text-stone-800">InstaCure Rural Telehealth Network</span>
               <span className="ml-2 text-[11px] text-stone-500">
                 &bull; Built for Smart India Hackathon (SIH) Rural Healthcare Challenge
               </span>
@@ -88,6 +90,8 @@ function MainAppContent() {
       <NewPatientModal />
       <AmbulanceBookingModal />
       <ConsultationFeedbackModal />
+      <EmergencyCoordinationModal />
+      <HospitalReceptionEmergencyDesk />
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}

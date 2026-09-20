@@ -12,10 +12,10 @@ export interface TranslationDictionary {
 export const translations: TranslationDictionary = {
   // App Identity
   app_name: {
-    en: 'SwasthyaSetu',
-    hi: 'स्वास्थ्यसेतु',
-    bn: 'স্বাস্থ্যসেতু',
-    ta: 'சுவஸ்த்யா சேது',
+    en: 'InstaCure',
+    hi: 'इंस्टाक्योर',
+    bn: 'ইনস্টাকিউর',
+    ta: 'இன்ஸ்டாகியூர்',
   },
   app_tagline: {
     en: 'Rural Telehealth & Longitudinal EHR Care Network',
@@ -188,7 +188,7 @@ export const translations: TranslationDictionary = {
     ta: 'ஆலோசனையை முடிக்கவும்',
   },
   live_subtitles: {
-    en: 'Live AI Subtitles & Translation',
+    en: 'Live Subtitles & Translation',
     hi: 'सजीव अनुवाद व उपशीर्षक (Live Subtitles)',
     bn: 'লাইভ সাবটাইটেল ও অনুবাদ',
     ta: 'நேரலை வசனங்கள் மற்றும் மொழிபெயர்ப்பு',
@@ -272,10 +272,10 @@ export const translations: TranslationDictionary = {
     ta: 'முன்னுரிமை வரிசைப்படுத்தப்பட்ட நோயாளி வரிசை',
   },
   ai_triage_active: {
-    en: 'AI Triage Engine Active',
-    hi: 'AI ट्राइएज सक्रिय',
-    bn: 'AI ট্রায়াজ সক্রিয়',
-    ta: 'AI ட்ரையேஜ் இயங்கும்',
+    en: 'Triage Engine Active',
+    hi: 'ट्राइएज सक्रिय',
+    bn: 'ট্রায়াজ সক্রিয়',
+    ta: 'ட்ரையேஜ் இயங்கும்',
   },
   all_patients: {
     en: 'All Patients',
@@ -1081,12 +1081,6 @@ export const translations: TranslationDictionary = {
     bn: 'ইন্টারেক্টিভ এডিটর',
     ta: 'இடைவினை தொகுப்பான்',
   },
-  rx_slip_preview: {
-    en: 'Rx Slip Preview',
-    hi: 'पर्चा पूर्वावलोकन',
-    bn: 'প্রেসক্রিপশন প্রিভিউ',
-    ta: 'மருந்துச்சீட்டு மாதிரிக்காட்சி',
-  },
   rx_target_patient: {
     en: 'Target Patient (रोगी का चयन)',
     hi: 'रोगी का चयन',
@@ -1372,6 +1366,18 @@ export const translations: TranslationDictionary = {
     hi: 'आपकी खोज से मेल खाता कोई अस्पताल नहीं मिला।',
     bn: 'আপনার অনুসন্ধানের সাথে মেলে এমন কোনো হাসপাতাল পাওয়া যায়নি।',
     ta: 'உங்கள் தேடலுக்கு பொருந்தும் மருத்துவமனைகள் எதுவும் காணப்படவில்லை.',
+  },
+  daily_schedule_tab: {
+    en: 'Daily Schedule',
+    hi: 'दैनिक कार्य-शेड्यूल',
+    bn: 'দৈনিক সময়সূচী',
+    ta: 'தினசரி அட்டவணை',
+  },
+  today_schedule: {
+    en: "Today's Schedule",
+    hi: 'आज का शेड्यूल',
+    bn: 'আজকের সময়সূচী',
+    ta: 'இன்றைய அட்டவணை',
   },
 };
 

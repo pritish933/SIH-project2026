@@ -456,7 +456,7 @@ export function TelehealthRoom() {
                 <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
                 <span className="font-bold text-white flex items-center gap-1.5">
                   <Languages className="w-3.5 h-3.5 text-teal-400" />
-                  <span>सजीव अनुवाद व उपशीर्षक (Live AI Subtitles)</span>
+                  <span>सजीव अनुवाद व उपशीर्षक (Live Subtitles)</span>
                 </span>
               </div>
 

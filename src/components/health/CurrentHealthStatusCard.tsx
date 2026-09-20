@@ -91,7 +91,7 @@ export function CurrentHealthStatusCard({
                 {isDiagnostic ? (
                   <>
                     <Building className="w-3.5 h-3.5 text-purple-600" />
-                    <span>{latestVitals.conductorName || 'Diagnostic PathLab (AI Scanned)'}</span>
+                    <span>{latestVitals.conductorName || 'Diagnostic PathLab (Scanned)'}</span>
                   </>
                 ) : isAsha ? (
                   <>
@@ -120,10 +120,10 @@ export function CurrentHealthStatusCard({
           <button
             onClick={onOpenScannerModal}
             className="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold shadow-xs flex items-center gap-2 cursor-pointer transition-all active:scale-95"
-            title="Scan pathology report from diagnostic center with AI"
+            title="Scan pathology report from diagnostic center"
           >
-            <Sparkles className="w-4 h-4 text-purple-200" />
-            <span>Scan Lab Report (AI)</span>
+            <FileText className="w-4 h-4 text-purple-200" />
+            <span>Scan Lab Report</span>
           </button>
         </div>
       </div>

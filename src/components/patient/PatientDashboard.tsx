@@ -27,6 +27,7 @@ import {
   RefreshCw,
   ExternalLink,
   Award,
+  Zap,
 } from 'lucide-react';
 import { CurrentHealthStatusCard } from '../health/CurrentHealthStatusCard';
 import { ManualHealthUpdateModal } from '../health/ManualHealthUpdateModal';
@@ -53,6 +54,9 @@ export function PatientDashboard() {
     activeAmbulanceRide,
     setIsAmbulanceModalOpen,
     appointments,
+    isCoordinationModalOpen,
+    setIsCoordinationModalOpen,
+    activeCoordinationSession,
     t,
   } = useApp();
 
@@ -192,11 +196,12 @@ export function PatientDashboard() {
                     <span>Book Doctor Consult</span>
                   </button>
                   <button
-                    onClick={() => setIsAmbulanceModalOpen(true)}
+                    onClick={() => setIsCoordinationModalOpen(true)}
                     className="px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                    title="Emergency Healthcare Coordination Hub"
                   >
-                    <Ambulance className="w-4 h-4 text-red-600" />
-                    <span>108 SOS</span>
+                    <Zap className="w-4 h-4 text-red-600 fill-red-600" />
+                    <span>{activeCoordinationSession ? '108 War Room' : '108 Emergency SOS'}</span>
                   </button>
                 </div>
               </div>
@@ -442,11 +447,10 @@ export function PatientDashboard() {
                       <Activity className="w-5 h-5" />
                     </div>
                     <span
-                      className={`text-xs font-extrabold px-2 py-0.5 rounded-full ${
-                        hasElevatedVitals
+                      className={`text-xs font-extrabold px-2 py-0.5 rounded-full ${hasElevatedVitals
                           ? 'bg-amber-100 text-amber-800'
                           : 'bg-emerald-100 text-emerald-800'
-                      }`}
+                        }`}
                     >
                       {hasElevatedVitals ? 'Needs Care' : 'Normal'}
                     </span>
@@ -567,21 +571,19 @@ export function PatientDashboard() {
                     {patientAppointments.map((apt) => (
                       <div
                         key={apt.id}
-                        className={`p-5 rounded-2xl border space-y-3 transition-colors ${
-                          apt.mode === 'Online'
+                        className={`p-5 rounded-2xl border space-y-3 transition-colors ${apt.mode === 'Online'
                             ? 'bg-teal-50/40 border-teal-200'
                             : 'bg-purple-50/40 border-purple-200'
-                        }`}
+                          }`}
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
                               <span
-                                className={`px-2.5 py-0.5 rounded-full text-[11px] font-black flex items-center gap-1 ${
-                                  apt.mode === 'Online'
+                                className={`px-2.5 py-0.5 rounded-full text-[11px] font-black flex items-center gap-1 ${apt.mode === 'Online'
                                     ? 'bg-teal-200/80 text-teal-900'
                                     : 'bg-purple-200/80 text-purple-900'
-                                }`}
+                                  }`}
                               >
                                 {apt.mode === 'Online' ? (
                                   <>
@@ -713,8 +715,8 @@ export function PatientDashboard() {
                     onClick={() => setIsScannerModalOpen(true)}
                     className="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-xs cursor-pointer transition-colors flex items-center gap-1.5"
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>AI Report Scanner</span>
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>Lab Report Scanner</span>
                   </button>
                 </div>
               </div>
@@ -775,19 +777,13 @@ export function PatientDashboard() {
 
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setIsMedicineModalOpen(true)}
-                    className="px-3.5 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Pill className="w-3.5 h-3.5" />
-                    <span>Pharmacy Inventory</span>
-                  </button>
-                  <button
                     onClick={() => setSelectedPatientForEHR(currentPatient)}
                     className="px-3.5 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <span>Full EHR Record</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
+
                 </div>
               </div>
 
@@ -970,9 +966,8 @@ export function PatientDashboard() {
                           <div className="text-xs text-stone-600 mt-0.5">
                             Specialty: <span className="font-bold text-stone-800">{ref.specialtyRequired}</span> &bull; Urgency:{' '}
                             <span
-                              className={`font-bold ${
-                                ref.urgency === 'Immediate' ? 'text-red-600' : 'text-stone-800'
-                              }`}
+                              className={`font-bold ${ref.urgency === 'Immediate' ? 'text-red-600' : 'text-stone-800'
+                                }`}
                             >
                               {ref.urgency}
                             </span>
@@ -993,29 +988,26 @@ export function PatientDashboard() {
                             1. Sub-Centre Triage
                           </div>
                           <div
-                            className={`p-2.5 rounded-xl font-bold ${
-                              ref.status !== 'Initiated'
+                            className={`p-2.5 rounded-xl font-bold ${ref.status !== 'Initiated'
                                 ? 'bg-emerald-600 text-white shadow-2xs'
                                 : 'bg-stone-100 text-stone-500 border border-stone-200'
-                            }`}
+                              }`}
                           >
                             2. PHC Cleared
                           </div>
                           <div
-                            className={`p-2.5 rounded-xl font-bold ${
-                              ref.status === 'Specialist_Review' || ref.status === 'Completed'
+                            className={`p-2.5 rounded-xl font-bold ${ref.status === 'Specialist_Review' || ref.status === 'Completed'
                                 ? 'bg-emerald-600 text-white shadow-2xs'
                                 : 'bg-stone-100 text-stone-500 border border-stone-200'
-                            }`}
+                              }`}
                           >
                             3. Transit &amp; Review
                           </div>
                           <div
-                            className={`p-2.5 rounded-xl font-bold ${
-                              ref.status === 'Completed'
+                            className={`p-2.5 rounded-xl font-bold ${ref.status === 'Completed'
                                 ? 'bg-emerald-600 text-white shadow-2xs'
                                 : 'bg-stone-100 text-stone-500 border border-stone-200'
-                            }`}
+                              }`}
                           >
                             4. Specialist Consult
                           </div>
@@ -1058,13 +1050,22 @@ export function PatientDashboard() {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => setIsAmbulanceModalOpen(true)}
-                  className="px-5 py-3 rounded-2xl bg-white hover:bg-stone-100 text-red-700 text-xs font-black shadow-lg transition-colors flex items-center gap-2 cursor-pointer self-start sm:self-auto"
-                >
-                  <Ambulance className="w-4 h-4 text-red-600" />
-                  <span>Request 108 Ambulance Now</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                  <button
+                    onClick={() => setIsCoordinationModalOpen(true)}
+                    className="px-5 py-3 rounded-2xl bg-white hover:bg-stone-100 text-red-700 text-xs font-black shadow-lg transition-colors flex items-center gap-2 cursor-pointer"
+                  >
+                    <Zap className="w-4 h-4 text-red-600 fill-red-600" />
+                    <span>{activeCoordinationSession ? 'Open 108 War Room' : 'Emergency Dispatch (SIH 133)'}</span>
+                  </button>
+                  <button
+                    onClick={() => setIsAmbulanceModalOpen(true)}
+                    className="px-4 py-3 rounded-2xl bg-red-800 hover:bg-red-900 text-white text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer border border-red-500/40"
+                  >
+                    <Ambulance className="w-4 h-4 text-white" />
+                    <span>Manual 108 Form</span>
+                  </button>
+                </div>
               </div>
 
               {/* Uber-Style Live Ambulance Card (Active Ride) */}
@@ -1238,30 +1239,30 @@ export function PatientDashboard() {
         onJoinCall={
           selectedAppointmentForSlip?.mode === 'Online'
             ? () => {
-                setIsSlipModalOpen(false);
-                const session = telehealthQueue.find(
-                  (s) => s.patientId === currentPatient.id
-                ) || {
-                  id: selectedAppointmentForSlip.id,
-                  patientId: selectedAppointmentForSlip.patientId,
-                  patientName: selectedAppointmentForSlip.patientName,
-                  patientAge: currentPatient.age,
-                  patientGender: currentPatient.gender,
-                  abhaId: selectedAppointmentForSlip.abhaId,
-                  doctorId: selectedAppointmentForSlip.doctorId,
-                  doctorName: selectedAppointmentForSlip.doctorName,
-                  doctorSpecialty: selectedAppointmentForSlip.doctorSpecialty,
-                  scheduledTime: selectedAppointmentForSlip.timeSlot,
-                  complaint: selectedAppointmentForSlip.complaint,
-                  priority: 'Medium',
-                  ashaAssisted: true,
-                  ashaName: currentPatient.assignedAshaWorker || 'Meena Devi',
-                  subCentre: selectedAppointmentForSlip.facility,
-                  status: 'Active Call',
-                  connectionQuality: 'Good',
-                };
-                startTeleconsultation(session as any);
-              }
+              setIsSlipModalOpen(false);
+              const session = telehealthQueue.find(
+                (s) => s.patientId === currentPatient.id
+              ) || {
+                id: selectedAppointmentForSlip.id,
+                patientId: selectedAppointmentForSlip.patientId,
+                patientName: selectedAppointmentForSlip.patientName,
+                patientAge: currentPatient.age,
+                patientGender: currentPatient.gender,
+                abhaId: selectedAppointmentForSlip.abhaId,
+                doctorId: selectedAppointmentForSlip.doctorId,
+                doctorName: selectedAppointmentForSlip.doctorName,
+                doctorSpecialty: selectedAppointmentForSlip.doctorSpecialty,
+                scheduledTime: selectedAppointmentForSlip.timeSlot,
+                complaint: selectedAppointmentForSlip.complaint,
+                priority: 'Medium',
+                ashaAssisted: true,
+                ashaName: currentPatient.assignedAshaWorker || 'Meena Devi',
+                subCentre: selectedAppointmentForSlip.facility,
+                status: 'Active Call',
+                connectionQuality: 'Good',
+              };
+              startTeleconsultation(session as any);
+            }
             : undefined
         }
       />

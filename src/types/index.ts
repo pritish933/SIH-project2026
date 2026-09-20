@@ -361,3 +361,156 @@ export interface FollowUpTask {
   sourcePrescriptionId?: string;
   sourceReferralId?: string;
 }
+
+// ============================================================================
+// SIH PROBLEM STATEMENT 133: AI-POWERED EMERGENCY HEALTHCARE COORDINATION TYPES
+// ============================================================================
+
+export type EmergencyCategory =
+  | 'trauma_accident'
+  | 'cardiac_arrest'
+  | 'maternal_labor'
+  | 'respiratory_distress'
+  | 'stroke_neuro'
+  | 'snakebite_poisoning'
+  | 'general_casualty';
+
+export interface EmergencyCategoryMeta {
+  id: EmergencyCategory;
+  name: string;
+  hindiName: string;
+  bengaliName: string;
+  icon: string;
+  severity: 'CRITICAL_RED' | 'URGENT_YELLOW';
+  typicalComplaints: string[];
+  requiredSpecialist: string;
+  requiredFacilities: string[];
+  requiredBedType: 'icu' | 'oxygen' | 'general';
+  ambulanceTypeNeeded: 'ALS_108' | 'BLS_108' | 'JANANI_102';
+  goldenHourWindowMinutes: number;
+}
+
+export interface HospitalCapabilityRequirement {
+  specialistNeeded: string;
+  facilitiesNeeded: string[];
+  bedTypeNeeded: 'icu' | 'oxygen' | 'general';
+  emergency24x7Required: boolean;
+  bloodBankRequired?: boolean;
+}
+
+export interface HospitalEvaluationDetail {
+  hospitalId: string;
+  hospitalName: string;
+  tier: string;
+  distanceKm: number;
+  travelTime: string;
+  doctorStatus: 'On Duty' | 'On Call' | 'In Surgery' | 'Absent';
+  doctorName: string;
+  doctorSpecialty: string;
+  specialistMatched: boolean;
+  availableBeds: { general: number; oxygen: number; icu: number };
+  bedAvailable: boolean;
+  facilitiesAvailable: string[];
+  missingFacilities: string[];
+  bloodBankAvailable: boolean;
+  isSuitable: boolean;
+  cascadeOrder: number;
+  rejectionReasons: string[];
+  acceptanceReason?: string;
+}
+
+export interface EmergencyBedReservation {
+  reservationToken: string;
+  bedType: 'icu' | 'oxygen' | 'general';
+  bedNumber: string;
+  hospitalId: string;
+  hospitalName: string;
+  reservedAt: string;
+  expiresInMinutes: number;
+  status: 'Pre_Reserved' | 'Trauma_Bay_Ready' | 'Bed_Occupied' | 'Cancelled';
+  receptionDeskPhone: string;
+  receptionistOnDuty: string;
+  traumaTeamAlerted: boolean;
+  qrVerificationCode: string;
+}
+
+export interface EmergencyAmbulanceDispatch {
+  rideId: string;
+  ambulanceType: 'BLS_108' | 'ALS_108' | 'JANANI_102';
+  vehicleNumber: string;
+  vehicleModel: string;
+  driverName: string;
+  driverPhone: string;
+  paramedicName: string;
+  paramedicDesignation: string;
+  pickupGps: { lat: number; lng: number; address: string; village: string };
+  destinationHospitalGps: { lat: number; lng: number; name: string; address: string };
+  etaMinutes: number;
+  distanceKm: number;
+  currentProgressPercent: number;
+  status: 'Dispatched' | 'En_Route_Pickup' | 'Arrived_Doorstep' | 'Patient_Loaded' | 'En_Route_Hospital' | 'Reached_Casualty';
+}
+
+export interface StakeholderCoordinationStatus {
+  patient: {
+    status: string;
+    instructions: string[];
+    reassuranceNote: string;
+  };
+  ashaWorker: {
+    name: string;
+    phone: string;
+    status: string;
+    actionChecklist: string[];
+    isDoorstepPresent: boolean;
+  };
+  ambulance: {
+    status: string;
+    etaMinutes: number;
+    telemetry: string;
+  };
+  hospitalReception: {
+    status: string;
+    bedNumber: string;
+    stretcherTeamReady: boolean;
+    casualtyDeskNotes: string;
+  };
+  doctor: {
+    name: string;
+    specialty: string;
+    status: string;
+    clinicalPreBrief: string;
+    traumaBayEquipped: boolean;
+  };
+}
+
+export interface EmergencyCoordinationSession {
+  id: string;
+  timestamp: string;
+  category: EmergencyCategory;
+  categoryMeta: EmergencyCategoryMeta;
+  requesterRole: 'patient' | 'asha_worker';
+  requesterName: string;
+  requesterPhone: string;
+  patientName: string;
+  patientAge: number;
+  patientGender: 'Male' | 'Female' | 'Other';
+  patientAbhaId?: string;
+  patientVillage: string;
+  patientLocation: {
+    lat: number;
+    lng: number;
+    address: string;
+    landmark?: string;
+  };
+  chiefComplaint: string;
+  evaluatedHospitals: HospitalEvaluationDetail[];
+  selectedHospital: HospitalEvaluationDetail;
+  cascadeCount: number;
+  bedReservation: EmergencyBedReservation;
+  ambulanceDispatch: EmergencyAmbulanceDispatch;
+  stakeholders: StakeholderCoordinationStatus;
+  timeSavedMinutes: number; // e.g. 52 minutes saved vs manual hospital hopping
+  status: 'coordinating' | 'ambulance_assigned' | 'bed_locked' | 'patient_in_transit' | 'reached_hospital' | 'admitted';
+}
+

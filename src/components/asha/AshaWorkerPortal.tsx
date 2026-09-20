@@ -23,6 +23,7 @@ import {
   X,
   Stethoscope,
   HeartPulse,
+  Zap,
 } from 'lucide-react';
 
 export function AshaWorkerPortal() {
@@ -40,6 +41,10 @@ export function AshaWorkerPortal() {
     setIsNewPatientModalOpen,
     triggerEmergencySOS,
     syncOfflineQueue,
+    isCoordinationModalOpen,
+    setIsCoordinationModalOpen,
+    activeCoordinationSession,
+    launchEmergencyCoordination,
     t,
   } = useApp();
 
@@ -154,11 +159,12 @@ export function AshaWorkerPortal() {
           </button>
 
           <button
-            onClick={() => triggerEmergencySOS('Emergency SOS Alert', currentUser.village)}
+            onClick={() => setIsCoordinationModalOpen(true)}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+            title="Emergency Healthcare Coordination Hub"
           >
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span>Red Flag Emergency SOS</span>
+            <Zap className="w-3.5 h-3.5 fill-white text-white" />
+            <span>{activeCoordinationSession ? '108 Active War Room' : 'Red Flag 108 Dispatch'}</span>
           </button>
         </div>
       </div>

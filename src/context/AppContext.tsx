@@ -17,7 +17,14 @@ import {
   ConsultationFeedback,
   DoctorQualityMetrics,
   FollowUpTask,
+  EmergencyCoordinationSession,
+  EmergencyCategory,
+  EmergencyBedReservation,
 } from '../types';
+import {
+  createEmergencySession,
+  EMERGENCY_ARCHETYPES,
+} from '../utils/emergencyCoordinationEngine';
 import {
   DEMO_USERS,
   INITIAL_PATIENTS,
@@ -64,6 +71,11 @@ interface AppContextType {
     subCentre?: string;
   } | null;
   followUpTasks: FollowUpTask[];
+  
+  // SIH Problem Statement 133: AI Emergency Coordination System State
+  activeCoordinationSession: EmergencyCoordinationSession | null;
+  isCoordinationModalOpen: boolean;
+  isHospitalReceptionViewOpen: boolean;
   
   // Actions
   loginAsRole: (role: UserRole) => void;
@@ -136,6 +148,25 @@ interface AppContextType {
   requestMedicineRestock: (medicineId: string, facility: 'subCentre' | 'phc') => void;
   bookAppointment: (appointmentData: Omit<DoctorAppointment, 'id' | 'tokenNumber' | 'status' | 'bookedAt'>) => DoctorAppointment;
   cancelAppointment: (appointmentId: string) => void;
+  launchEmergencyCoordination: (params: {
+    category: EmergencyCategory;
+    requesterRole?: 'patient' | 'asha_worker';
+    patientName?: string;
+    patientAge?: number;
+    patientGender?: 'Male' | 'Female' | 'Other';
+    patientVillage?: string;
+    landmark?: string;
+    chiefComplaint?: string;
+  }) => EmergencyCoordinationSession;
+  acknowledgeBedReservation: (token: string, notes?: string) => void;
+  updateEmergencyStakeholderStatus: (
+    stakeholder: 'ambulance' | 'hospitalReception' | 'doctor' | 'ashaWorker',
+    update: Record<string, any>
+  ) => void;
+  cancelEmergencyCoordination: () => void;
+  setIsCoordinationModalOpen: (open: boolean) => void;
+  setIsHospitalReceptionViewOpen: (open: boolean) => void;
+  triggerAiEmergencyCoordination: (category?: EmergencyCategory) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -164,6 +195,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [activeAmbulanceRide, setActiveAmbulanceRide] = useState<AmbulanceRide | null>(null);
   const [isAmbulanceModalOpen, setIsAmbulanceModalOpen] = useState(false);
   const [appointments, setAppointments] = useState<DoctorAppointment[]>(INITIAL_APPOINTMENTS);
+
+  // SIH 133: AI-Powered Emergency Healthcare Coordination State
+  const [activeCoordinationSession, setActiveCoordinationSession] = useState<EmergencyCoordinationSession | null>(null);
+  const [isCoordinationModalOpen, setIsCoordinationModalOpen] = useState(false);
+  const [isHospitalReceptionViewOpen, setIsHospitalReceptionViewOpen] = useState(false);
 
   // Initialize Doctor Availability from DOCTOR_PROFILES + DEMO_USERS
   const [doctorAvailabilityMap, setDoctorAvailabilityMap] = useState<Record<string, DoctorAvailabilityInfo>>(() => {
@@ -680,6 +716,128 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setEmergencyAlert(null);
   };
 
+  // SIH 133: AI Emergency Coordination Handlers
+  const launchEmergencyCoordination = (params: {
+    category: EmergencyCategory;
+    requesterRole?: 'patient' | 'asha_worker';
+    patientName?: string;
+    patientAge?: number;
+    patientGender?: 'Male' | 'Female' | 'Other';
+    patientVillage?: string;
+    landmark?: string;
+    chiefComplaint?: string;
+  }): EmergencyCoordinationSession => {
+    const patient = patients[0];
+    const session = createEmergencySession({
+      category: params.category,
+      requesterRole: params.requesterRole || (activeRole === 'asha_worker' ? 'asha_worker' : 'patient'),
+      requesterName: currentUser.name || 'Rameshwar Prasad',
+      requesterPhone: currentUser.phone || '+91 94250 11080',
+      patientName: params.patientName || patient?.name || 'Rameshwar Prasad',
+      patientAge: params.patientAge || patient?.age || 52,
+      patientGender: params.patientGender || patient?.gender || 'Male',
+      patientAbhaId: patient?.abhaId || '91-8472-9103-2941',
+      patientVillage: params.patientVillage || patient?.village || currentUser.village || 'Gram Sihore',
+      landmark: params.landmark,
+      chiefComplaint: params.chiefComplaint,
+    });
+
+    setActiveCoordinationSession(session);
+    setIsCoordinationModalOpen(true);
+
+    // Synchronize ambulance ride and global emergency alert banner
+    const rideConfig = DEFAULT_AMBULANCE_DRIVERS[session.ambulanceDispatch.ambulanceType];
+    setActiveAmbulanceRide({
+      id: session.ambulanceDispatch.rideId,
+      bookingTime: session.timestamp,
+      ambulanceType: session.ambulanceDispatch.ambulanceType,
+      ambulanceTypeName: rideConfig.typeName,
+      vehicleNumber: session.ambulanceDispatch.vehicleNumber,
+      vehicleModel: session.ambulanceDispatch.vehicleModel,
+      pickupLocation: {
+        address: session.patientLocation.address,
+        village: session.patientVillage,
+        landmark: session.patientLocation.landmark || 'Primary School Gate',
+        coordinates: { x: 80, y: 74 },
+      },
+      destinationHospital: {
+        name: session.selectedHospital.hospitalName,
+        facilityType: session.selectedHospital.tier,
+        distanceKm: session.selectedHospital.distanceKm,
+        coordinates: { x: 18, y: 22 },
+      },
+      driver: rideConfig.driver,
+      status: 'EnRoute',
+      etaMinutes: session.ambulanceDispatch.etaMinutes,
+      distanceRemainingKm: session.selectedHospital.distanceKm,
+      routeProgressPercent: 15,
+      emergencyReason: session.chiefComplaint,
+      patientName: session.patientName,
+      patientPhone: session.requesterPhone,
+      sirenActive: true,
+    });
+
+    setEmergencyAlert({
+      active: true,
+      message: `🚨 EMERGENCY ROUTING ACTIVE (${session.categoryMeta.name}): Bed reserved (${session.bedReservation.bedNumber}) at ${session.selectedHospital.hospitalName}. 108 Ambulance dispatched (ETA: ${session.ambulanceDispatch.etaMinutes} mins).`,
+      timestamp: session.timestamp,
+    });
+
+    return session;
+  };
+
+  const acknowledgeBedReservation = (token: string, notes?: string) => {
+    setActiveCoordinationSession((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        bedReservation: {
+          ...prev.bedReservation,
+          status: 'Trauma_Bay_Ready',
+        },
+        stakeholders: {
+          ...prev.stakeholders,
+          hospitalReception: {
+            ...prev.stakeholders.hospitalReception,
+            status: 'Confirmed by Casualty Desk • Trauma Bay Prepped',
+            stretcherTeamReady: true,
+            casualtyDeskNotes: notes || 'Emergency admission pass validated. Stretcher team standing by.',
+          },
+        },
+      };
+    });
+  };
+
+  const updateEmergencyStakeholderStatus = (
+    stakeholder: 'ambulance' | 'hospitalReception' | 'doctor' | 'ashaWorker',
+    update: Record<string, any>
+  ) => {
+    setActiveCoordinationSession((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        stakeholders: {
+          ...prev.stakeholders,
+          [stakeholder]: {
+            ...prev.stakeholders[stakeholder],
+            ...update,
+          },
+        },
+      };
+    });
+  };
+
+  const cancelEmergencyCoordination = () => {
+    setActiveCoordinationSession(null);
+    setIsCoordinationModalOpen(false);
+  };
+
+  const triggerAiEmergencyCoordination = (category?: EmergencyCategory) => {
+    launchEmergencyCoordination({
+      category: category || 'cardiac_arrest',
+    });
+  };
+
   const syncOfflineQueue = () => {
     if (offlineQueueCount > 0) {
       setOfflineQueueCount(0);
@@ -954,6 +1112,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
         requestMedicineRestock,
         bookAppointment,
         cancelAppointment,
+        activeCoordinationSession,
+        isCoordinationModalOpen,
+        isHospitalReceptionViewOpen,
+        launchEmergencyCoordination,
+        acknowledgeBedReservation,
+        updateEmergencyStakeholderStatus,
+        cancelEmergencyCoordination,
+        setIsCoordinationModalOpen,
+        setIsHospitalReceptionViewOpen,
+        triggerAiEmergencyCoordination,
       }}
     >
       {children}

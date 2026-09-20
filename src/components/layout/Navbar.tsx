@@ -18,6 +18,7 @@ import {
   CalendarPlus,
   Building2,
   Award,
+  Zap,
 } from 'lucide-react';
 import { DialectSymptomTranslatorModal } from '../translation/DialectSymptomTranslatorModal';
 
@@ -37,6 +38,9 @@ export function Navbar() {
     setIsAmbulanceModalOpen,
     triggerEmergencySOS,
     syncOfflineQueue,
+    isCoordinationModalOpen,
+    setIsCoordinationModalOpen,
+    activeCoordinationSession,
     t,
   } = useApp();
 
@@ -92,7 +96,7 @@ export function Navbar() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-xl tracking-tight text-stone-900 font-sans">
-                  Swasthya<span className="text-emerald-700">Setu</span>
+                  Insta<span className="text-emerald-700">Cure</span>
                 </span>
                 <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
                   ABDM Compliant
@@ -106,14 +110,21 @@ export function Navbar() {
 
           {/* Center / Right controls */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Emergency SOS 108 */}
+            {/* SIH 133 Emergency Coordination SOS */}
             <button
-              onClick={() => setIsAmbulanceModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer animate-pulse"
-              title="Book & Live Track 108 Emergency Ambulance"
+              onClick={() => setIsCoordinationModalOpen(true)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black shadow-sm transition-all cursor-pointer ${
+                activeCoordinationSession
+                  ? 'bg-red-600 hover:bg-red-700 text-white ring-2 ring-red-400/60 animate-pulse'
+                  : 'bg-red-600 hover:bg-red-700 text-white'
+              }`}
+              title="Emergency Healthcare Coordination Hub (Nearest Hospital, Bed Reservation & 108 Ambulance Dispatch)"
             >
-              <PhoneCall className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">108 Ambulance</span>
+              <Zap className="w-3.5 h-3.5 fill-white" />
+              <span>{activeCoordinationSession ? '108 Active' : '108 Emergency'}</span>
+              {activeCoordinationSession && (
+                <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+              )}
             </button>
 
             {/* Quick Doctor Appointment shortcut for Patient */}
@@ -173,14 +184,16 @@ export function Navbar() {
               <span>Digital Triage</span>
             </button>
 
-            {/* Medicine Stock quick viewer */}
-            <button
-              onClick={() => setIsMedicineModalOpen(true)}
-              className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold transition-colors cursor-pointer"
-            >
-              <Pill className="w-3.5 h-3.5 text-blue-600" />
-              <span>Drug Stock</span>
-            </button>
+            {/* Medicine Stock quick viewer (hidden for patient dashboard) */}
+            {activeRole !== 'patient' && (
+              <button
+                onClick={() => setIsMedicineModalOpen(true)}
+                className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-semibold transition-colors cursor-pointer"
+              >
+                <Pill className="w-3.5 h-3.5 text-blue-600" />
+                <span>Drug Stock</span>
+              </button>
+            )}
 
             {/* Connectivity Mode Simulator (Crucial for SIH Low-Connectivity demonstration) */}
             <div className="relative">

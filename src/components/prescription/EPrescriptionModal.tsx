@@ -1168,7 +1168,7 @@ export function EPrescriptionModal({
                     In case of acute breathlessness, chest pain or convulsions, dial 108 Emergency Ambulance immediately.
                   </p>
                   <p className="text-[10px] text-stone-400">
-                    Generated via SwasthyaSetu Rural Telehealth Node &bull; Electronic prescription valid under Indian Telemedicine Practice Guidelines 2020.
+                    Generated via InstaCure Rural Telehealth Node &bull; Electronic prescription valid under Indian Telemedicine Practice Guidelines 2020.
                   </p>
                 </div>
 

@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Building2,
   Award,
+  Zap,
 } from 'lucide-react';
 import { PatientEHR } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -64,7 +65,7 @@ export function PatientSidebar({
   counts,
   onOpenAmbulanceModal,
 }: PatientSidebarProps) {
-  const { language } = useApp();
+  const { language, setIsCoordinationModalOpen } = useApp();
   const getSidebarText = (en: string, hi: string, bn: string, ta: string) => {
     if (language === 'hi') return hi;
     if (language === 'bn') return bn;
@@ -311,13 +312,13 @@ export function PatientSidebar({
         </div>
 
         {/* Quick Emergency 108 Action Bar */}
-        <div className="p-3 border-t border-stone-100 bg-stone-50/60">
+        <div className="p-3 border-t border-stone-100 bg-stone-50/60 space-y-1.5">
           <button
-            onClick={onOpenAmbulanceModal}
+            onClick={() => setIsCoordinationModalOpen(true)}
             className="w-full py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-xs flex items-center justify-center gap-2 cursor-pointer transition-colors"
           >
-            <Ambulance className="w-4 h-4 text-white" />
-            <span>Emergency 108 Dispatch</span>
+            <Zap className="w-4 h-4 text-white fill-white" />
+            <span>108 Emergency Hub</span>
           </button>
         </div>
     </div>

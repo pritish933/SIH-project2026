@@ -26,6 +26,8 @@ import {
   Map,
   RotateCcw,
   Crosshair,
+  MessageCircle,
+  BotMessageSquare,
 } from 'lucide-react';
 import {
   NEARBY_HOSPITALS_DATA,
@@ -34,6 +36,7 @@ import {
   HospitalTier,
 } from '../../data/hospitalData';
 import { useApp } from '../../context/AppContext';
+import { HospitalAIChatbot } from './HospitalAIChatbot';
 
 export function NearbyHospitalsSection() {
   const { language, setIsAmbulanceModalOpen, t } = useApp();
@@ -46,6 +49,7 @@ export function NearbyHospitalsSection() {
   const [pmjayOnly, setPmjayOnly] = useState(false);
   const [icuOnly, setIcuOnly] = useState(false);
   const [viewMode, setViewMode] = useState<'map' | 'grid' | 'radar'>('map');
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState<HospitalFacility | null>(
     NEARBY_HOSPITALS_DATA[0] // Dr. B.C. Roy Hospital next to HIT
   );
@@ -175,6 +179,20 @@ export function NearbyHospitalsSection() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            {/* Hospital Advisor Button */}
+            <button
+              onClick={() => setIsChatbotOpen((v) => !v)}
+              className={`px-4 py-2.5 rounded-2xl text-xs font-bold shadow-lg transition-all flex items-center gap-2 cursor-pointer ${
+                isChatbotOpen
+                  ? 'bg-white text-emerald-900 ring-2 ring-white/60'
+                  : 'bg-emerald-500/30 hover:bg-emerald-500/50 text-white border border-emerald-400/40'
+              }`}
+              title="Hospital Advisor — Symptom se best hospital dhundho"
+            >
+              <Building2 className="w-4 h-4" />
+              <span>{isHindi ? 'अस्पताल खोजें' : 'Find Best Hospital'}</span>
+            </button>
+
             {/* 108 Emergency Shortcut */}
             <button
               onClick={() => setIsAmbulanceModalOpen(true)}
@@ -212,6 +230,24 @@ export function NearbyHospitalsSection() {
           </div>
         </div>
       </div>
+
+      {/* ===================================================================== */}
+      {/* AI HOSPITAL ADVISOR CHATBOT PANEL                                     */}
+      {/* ===================================================================== */}
+      {isChatbotOpen && (
+        <div className="animate-in slide-in-from-top duration-300">
+          <div className="h-[600px] lg:h-[620px]">
+            <HospitalAIChatbot
+              onSelectHospital={(hospital) => {
+                setSelectedHospital(hospital);
+                setViewMode('map');
+                setIsChatbotOpen(false);
+              }}
+              onClose={() => setIsChatbotOpen(false)}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Control Bar: Search, Filters & View Toggle */}
       <div className="bg-white rounded-3xl p-5 border border-stone-200 shadow-xs space-y-4">

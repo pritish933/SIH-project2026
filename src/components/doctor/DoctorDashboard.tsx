@@ -6,11 +6,13 @@ import { EPrescriptionModal } from '../prescription/EPrescriptionModal';
 import { IncomingReferralInbox } from './IncomingReferralInbox';
 import { DoctorQualityReviewsView } from './DoctorQualityReviewsView';
 import { HighRiskFollowUpTracker } from './HighRiskFollowUpTracker';
+import { DoctorDailyScheduleView } from './DoctorDailyScheduleView';
 import {
   Video,
   PhoneCall,
   UserCheck,
   Clock,
+  Calendar,
   AlertCircle,
   FileText,
   Activity,
@@ -37,6 +39,8 @@ import {
   Award,
   ThumbsUp,
   MessageSquareQuote,
+  Zap,
+  ArrowRight,
 } from 'lucide-react';
 
 export function DoctorDashboard() {
@@ -57,10 +61,13 @@ export function DoctorDashboard() {
     getDoctorQualityMetrics,
     feedbacks,
     followUpTasks,
+    activeCoordinationSession,
+    setIsCoordinationModalOpen,
+    appointments,
     t,
   } = useApp();
 
-  const [activeDoctorView, setActiveDoctorView] = useState<'queue' | 'referrals' | 'quality' | 'followup'>('queue');
+  const [activeDoctorView, setActiveDoctorView] = useState<'queue' | 'schedule' | 'referrals' | 'quality' | 'followup'>('queue');
   const [isPrescriptionModalOpen, setIsPrescriptionModalOpen] = useState(false);
   const [prescriptionTargetPatient, setPrescriptionTargetPatient] = useState<PatientEHR | null>(null);
 
@@ -135,6 +142,39 @@ export function DoctorDashboard() {
             className="text-stone-300 hover:text-white p-1 rounded-md"
           >
             <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* SIH 133: Real-Time Incoming Emergency Casualty Alert Banner */}
+      {activeCoordinationSession && (
+        <div className="p-4 bg-gradient-to-r from-red-600 via-rose-600 to-stone-900 text-white rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg border border-red-400/40 animate-pulse">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white text-red-600 flex items-center justify-center font-black shadow-inner shrink-0">
+              <Zap className="w-5 h-5 fill-red-600" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-xs tracking-wider uppercase bg-white/20 px-2 py-0.5 rounded text-white">
+                  CODE RED INCOMING CASUALTY (ETA {activeCoordinationSession.ambulanceDispatch.etaMinutes}m)
+                </span>
+                <span className="text-xs text-red-200 font-mono">Bed: {activeCoordinationSession.bedReservation.bedNumber}</span>
+              </div>
+              <h3 className="font-extrabold text-sm text-white mt-0.5">
+                {activeCoordinationSession.patientName} ({activeCoordinationSession.patientAge}y &bull; {activeCoordinationSession.patientVillage}) &mdash; {activeCoordinationSession.categoryMeta.name}
+              </h3>
+              <p className="text-[11px] text-red-100 mt-0.5">
+                Complaint: {activeCoordinationSession.chiefComplaint}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setIsCoordinationModalOpen(true)}
+            className="px-4 py-2 rounded-xl bg-white hover:bg-red-50 text-red-700 font-bold text-xs shadow-md transition-all cursor-pointer whitespace-nowrap self-start sm:self-auto flex items-center gap-1.5"
+          >
+            <span>Open Emergency War Room</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
@@ -298,6 +338,18 @@ export function DoctorDashboard() {
 
           {/* Quick Doctor Desk Actions */}
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setActiveDoctorView('schedule')}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer shadow-2xs border ${
+                activeDoctorView === 'schedule'
+                  ? 'bg-teal-700 text-white border-teal-700'
+                  : 'bg-teal-50 hover:bg-teal-100 text-teal-900 border-teal-200'
+              }`}
+              title="Today's clinical schedule, OPD tokens & tele-slots"
+            >
+              <Calendar className="w-3.5 h-3.5 text-teal-700" />
+              <span>Today's Schedule</span>
+            </button>
             <button
               onClick={() => setIsNewPatientModalOpen(true)}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
@@ -537,6 +589,25 @@ export function DoctorDashboard() {
           </button>
 
           <button
+            onClick={() => setActiveDoctorView('schedule')}
+            className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
+              activeDoctorView === 'schedule'
+                ? 'bg-teal-700 text-white shadow-xs'
+                : 'bg-white border border-stone-200 text-stone-700 hover:bg-stone-100'
+            }`}
+          >
+            <Calendar className="w-4 h-4" />
+            <span>{t('daily_schedule_tab')}</span>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-black ${
+                activeDoctorView === 'schedule' ? 'bg-teal-800 text-teal-100' : 'bg-stone-100 text-stone-700'
+              }`}
+            >
+              Today
+            </span>
+          </button>
+
+          <button
             onClick={() => setActiveDoctorView('referrals')}
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 ${
               activeDoctorView === 'referrals'
@@ -609,6 +680,8 @@ export function DoctorDashboard() {
           <strong className="text-stone-800">
             {activeDoctorView === 'queue'
               ? 'Live Telehealth Queue'
+              : activeDoctorView === 'schedule'
+              ? "Today's Clinical Daily Schedule"
               : activeDoctorView === 'referrals'
               ? 'Incoming Inter-Facility Referrals'
               : activeDoctorView === 'quality'
@@ -619,7 +692,20 @@ export function DoctorDashboard() {
       </div>
 
       {/* Conditionally Render View */}
-      {activeDoctorView === 'referrals' ? (
+      {activeDoctorView === 'schedule' ? (
+        <DoctorDailyScheduleView
+          currentUser={currentUser}
+          appointments={appointments}
+          patients={patients}
+          onStartTeleconsultation={startTeleconsultation}
+          onSelectPatientForEHR={setSelectedPatientForEHR}
+          onIssuePrescription={(patient) => {
+            setPrescriptionTargetPatient(patient);
+            setIsPrescriptionModalOpen(true);
+          }}
+          onOpenTriageModal={() => setIsTriageModalOpen(true)}
+        />
+      ) : activeDoctorView === 'referrals' ? (
         <IncomingReferralInbox
           onStartTeleconsultation={startTeleconsultation}
           onSelectPatientForEHR={setSelectedPatientForEHR}

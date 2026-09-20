@@ -100,7 +100,7 @@ export function HealthCheckupHistorySection({
           }`}
         >
           <Building className="w-3 h-3" />
-          <span>Diagnostic Centers (AI Scanned)</span>
+          <span>Diagnostic Centers (Lab Scanned)</span>
         </button>
         <button
           onClick={() => setFilter('Clinic')}
@@ -189,8 +189,8 @@ export function HealthCheckupHistorySection({
 
                   {rec.aiScanConfidence && (
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 self-start sm:self-auto flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" />
-                      <span>{rec.aiScanConfidence}% AI OCR Verified</span>
+                      <CheckCircle2 className="w-3 h-3" />
+                      <span>{rec.aiScanConfidence}% OCR Verified</span>
                     </span>
                   )}
                 </div>
@@ -246,7 +246,7 @@ export function HealthCheckupHistorySection({
                 {/* Notes & Key findings */}
                 {rec.keyFindings && rec.keyFindings.length > 0 && (
                   <div className="p-2.5 bg-white rounded-lg border border-purple-100 text-[11px] text-purple-950">
-                    <span className="font-semibold text-purple-900">AI Diagnostic Insights: </span>
+                    <span className="font-semibold text-purple-900">Diagnostic Insights: </span>
                     {rec.keyFindings.join(' • ')}
                   </div>
                 )}

@@ -158,7 +158,7 @@ Extract exact numeric values if present. If BP or other vitals are not on the bl
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`SwasthyaSetu Server running on http://0.0.0.0:${PORT}`);
+    console.log(`InstaCure Server running on http://0.0.0.0:${PORT}`);
   });
 }
 

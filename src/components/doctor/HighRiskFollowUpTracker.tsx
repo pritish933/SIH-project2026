@@ -435,7 +435,7 @@ export function HighRiskFollowUpTracker({
                         <div className="text-right">
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-amber-500 text-white shadow-xs">
                             <Clock className="w-3.5 h-3.5" />
-                            <span>Due Today (आज फ़ॉलो-अप)</span>
+                            <span>Due Today</span>
                           </span>
                           <p className="text-[10px] text-amber-700 font-semibold mt-0.5">
                             Priority queue active
