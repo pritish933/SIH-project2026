@@ -1,6 +1,0 @@
-{
-  "name": "InstaCure - Rural Telehealth & Care Network",
-  "description": "Integrated rural healthcare access platform featuring multi-role portals for Doctor, Patient, Admin, and Frontline Workers with assisted teleconsultation, longitudinal EHR, digital triage, referral tracking, and medicine inventory.",
-  "requestFramePermissions": ["camera", "microphone"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
