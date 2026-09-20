@@ -1,7 +1,7 @@
 {
-  "name": "swasthyasetu",
+  "name": "instacure",
   "version": "1.0.0",
-  "description": "SwasthyaSetu - Smart Telehealth & Rural Care Network",
+  "description": "InstaCure - Smart Telehealth & Rural Care Network",
   "private": true,
   "type": "module",
   "scripts": {

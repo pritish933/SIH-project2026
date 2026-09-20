@@ -1,4 +1,4 @@
-# SwasthyaSetu - Smart Telehealth & Rural Care Network
+# InstaCure - Smart Telehealth & Rural Care Network
 > **Smart India Hackathon (SIH) 2026**  
 > *Bridging the Healthcare Divide: Bringing Specialized Medical Care & Emergency Coordination to India's Last Mile.*
 
@@ -13,8 +13,8 @@ In rural and remote regions of India, access to quality healthcare remains a sev
 
 ---
 
-## 💡 Our Solution: SwasthyaSetu
-**SwasthyaSetu** is an integrated, low-bandwidth optimized rural digital health platform designed with a role-based architecture for:
+## 💡 Our Solution: InstaCure
+**InstaCure** is an integrated, low-bandwidth optimized rural digital health platform designed with a role-based architecture for:
 1. **Patients / Citizens**: Teleconsultations, emergency desk, nearby hospital beds tracker, diagnostic scanner, and personal health records.
 2. **Doctors / Specialists**: Clinical consultation room, digital E-prescriptions, daily OPD schedule, and high-risk patient follow-up management.
 3. **ASHA Frontline Workers**: Field screening survey toolkit, community vitals monitor, vaccination alerts, and maternal health tracking.
