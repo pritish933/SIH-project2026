@@ -29,7 +29,18 @@ export interface HospitalFacility {
     general: number;
     oxygen: number;
     icu: number;
+    emergency: number; // Emergency Beds
   };
+  ambulancesCount: number; // Ambulances available
+  staff: {
+    doctorsOnDutyCount: number;
+    emergencyTeamCount: number;
+    isDoctorAvailable: boolean;
+    activeDoctorName?: string;
+    activeDoctorSpecialty?: string;
+  };
+  lastUpdatedMinutesAgo: number;
+  lastUpdatedTimestamp?: string;
   specialities: string[];
   onDutyDoctor: {
     name: string;
@@ -83,10 +94,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: true,
     totalBeds: 500,
     availableBeds: {
-      general: 78,
-      oxygen: 26,
-      icu: 9,
+      icu: 3,
+      oxygen: 7,
+      general: 18,
+      emergency: 4,
     },
+    ambulancesCount: 2,
+    staff: {
+      doctorsOnDutyCount: 5,
+      emergencyTeamCount: 2,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. Debabrata Roy (MD, Emergency Medicine)',
+      activeDoctorSpecialty: 'Casualty Medical Officer & Critical Care',
+    },
+    lastUpdatedMinutesAgo: 2,
+    lastUpdatedTimestamp: new Date(Date.now() - 2 * 60000).toISOString(),
     specialities: ['24x7 Emergency Trauma & Resuscitation', 'Critical Care ICU / CCU', 'General & Laparoscopic Surgery', 'Obstetrics & Neonatal Care', 'Licensed Blood Bank', 'Digital X-Ray & CT Scan'],
     onDutyDoctor: {
       name: 'Dr. Debabrata Roy (MD, Emergency Medicine)',
@@ -126,10 +148,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: true,
     totalBeds: 150,
     availableBeds: {
-      general: 32,
-      oxygen: 14,
-      icu: 3,
+      icu: 2,
+      oxygen: 12,
+      general: 28,
+      emergency: 5,
     },
+    ambulancesCount: 3,
+    staff: {
+      doctorsOnDutyCount: 4,
+      emergencyTeamCount: 2,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. Subhashis Sen (MS, General Surgery)',
+      activeDoctorSpecialty: 'Sub-Divisional Medical Officer (SMO)',
+    },
+    lastUpdatedMinutesAgo: 5,
+    lastUpdatedTimestamp: new Date(Date.now() - 5 * 60000).toISOString(),
     specialities: ['24x7 Casualty & Emergency', 'Govt Fair Price Medicine Shop', 'Maternal Delivery & SNCU', 'Dialysis Centre (PMNDP Free)', 'Free Diagnostic Pathology'],
     onDutyDoctor: {
       name: 'Dr. Subhashis Sen (MS, General Surgery)',
@@ -169,10 +202,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: false,
     totalBeds: 60,
     availableBeds: {
-      general: 18,
-      oxygen: 8,
-      icu: 2,
+      icu: 1,
+      oxygen: 6,
+      general: 14,
+      emergency: 2,
     },
+    ambulancesCount: 2,
+    staff: {
+      doctorsOnDutyCount: 2,
+      emergencyTeamCount: 1,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. P. K. Bandyopadhyay (MBBS, DNB)',
+      activeDoctorSpecialty: 'Senior Port Medical Officer',
+    },
+    lastUpdatedMinutesAgo: 10,
+    lastUpdatedTimestamp: new Date(Date.now() - 10 * 60000).toISOString(),
     specialities: ['First Aid & Trauma Stabilization', 'Occupational Medicine & Triage', 'Ambulance Evacuation Unit', 'General Physician OPD', 'Cardiac Monitoring'],
     onDutyDoctor: {
       name: 'Dr. P. K. Bandyopadhyay (MBBS, DNB)',
@@ -212,10 +256,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: false,
     totalBeds: 10,
     availableBeds: {
-      general: 6,
-      oxygen: 3,
       icu: 0,
+      oxygen: 2,
+      general: 5,
+      emergency: 1,
     },
+    ambulancesCount: 1,
+    staff: {
+      doctorsOnDutyCount: 1,
+      emergencyTeamCount: 1,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. Shampa Das (MBBS)',
+      activeDoctorSpecialty: 'Municipal Medical Officer',
+    },
+    lastUpdatedMinutesAgo: 15,
+    lastUpdatedTimestamp: new Date(Date.now() - 15 * 60000).toISOString(),
     specialities: ['Daily General OPD', 'National Immunization Day (Pulse Polio)', 'NCD Checkup (Diabetes & BP)', 'Maternal & Antenatal Checkups', 'Free Govt Drug Dispensing'],
     onDutyDoctor: {
       name: 'Dr. Shampa Das (MBBS)',
@@ -255,10 +310,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: false,
     totalBeds: 40,
     availableBeds: {
-      general: 12,
-      oxygen: 5,
       icu: 1,
+      oxygen: 4,
+      general: 11,
+      emergency: 2,
     },
+    ambulancesCount: 1,
+    staff: {
+      doctorsOnDutyCount: 3,
+      emergencyTeamCount: 1,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. Sougata Mukherjee (MS Ophthalmology)',
+      activeDoctorSpecialty: 'Chief Eye Surgeon & Senior Consultant',
+    },
+    lastUpdatedMinutesAgo: 8,
+    lastUpdatedTimestamp: new Date(Date.now() - 8 * 60000).toISOString(),
     specialities: ['Advanced Ophthalmology (Micro-surgery & Phaco)', 'Maternal Mother & Child Care', 'Clean Low-Cost Inpatient Ward', 'Pathological Diagnostic Laboratory', 'Emergency Eye Injury Service'],
     onDutyDoctor: {
       name: 'Dr. Sougata Mukherjee (MS Ophthalmology)',
@@ -298,10 +364,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: true,
     totalBeds: 55,
     availableBeds: {
-      general: 15,
-      oxygen: 7,
-      icu: 4,
+      icu: 3,
+      oxygen: 6,
+      general: 12,
+      emergency: 3,
     },
+    ambulancesCount: 2,
+    staff: {
+      doctorsOnDutyCount: 3,
+      emergencyTeamCount: 1,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. Indranil Ghosh (MD, DNB Cardiology)',
+      activeDoctorSpecialty: 'Critical Care & Interventional Specialist',
+    },
+    lastUpdatedMinutesAgo: 12,
+    lastUpdatedTimestamp: new Date(Date.now() - 12 * 60000).toISOString(),
     specialities: ['Swasthya Sathi & PM-JAY Cashless', 'Advanced ICU & Mechanical Ventilator', 'Dialysis Unit (24x7)', 'Laparoscopic Surgery OT', 'Digital Sonography & Echocardiography'],
     onDutyDoctor: {
       name: 'Dr. Indranil Ghosh (MD, DNB Cardiology)',
@@ -341,10 +418,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: false,
     totalBeds: 30,
     availableBeds: {
-      general: 10,
-      oxygen: 5,
       icu: 0,
+      oxygen: 4,
+      general: 9,
+      emergency: 2,
     },
+    ambulancesCount: 1,
+    staff: {
+      doctorsOnDutyCount: 2,
+      emergencyTeamCount: 1,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. Partha Sarathi Maity (MBBS, DCH)',
+      activeDoctorSpecialty: 'Block Medical Officer of Health (BMOH)',
+    },
+    lastUpdatedMinutesAgo: 20,
+    lastUpdatedTimestamp: new Date(Date.now() - 20 * 60000).toISOString(),
     specialities: ['24x7 Rural Emergency Delivery', 'Newborn Care Corner (NBCC)', 'ASHA Frontline Referral Linkage', 'Cold Chain Vaccine Hub', 'Basic X-Ray & Pathological Tests'],
     onDutyDoctor: {
       name: 'Dr. Partha Sarathi Maity (MBBS, DCH)',
@@ -384,10 +472,21 @@ export const NEARBY_HOSPITALS_DATA: HospitalFacility[] = [
     bloodBank: true,
     totalBeds: 300,
     availableBeds: {
-      general: 54,
-      oxygen: 22,
-      icu: 7,
+      icu: 6,
+      oxygen: 19,
+      general: 48,
+      emergency: 8,
     },
+    ambulancesCount: 4,
+    staff: {
+      doctorsOnDutyCount: 6,
+      emergencyTeamCount: 3,
+      isDoctorAvailable: true,
+      activeDoctorName: 'Dr. Tanmay Roy (MS Ortho, MCh)',
+      activeDoctorSpecialty: 'Superintendent & Trauma Lead',
+    },
+    lastUpdatedMinutesAgo: 14,
+    lastUpdatedTimestamp: new Date(Date.now() - 14 * 60000).toISOString(),
     specialities: ['Tertiary Trauma & Critical Care', 'Cardiology & CCU Monitoring', 'Hemodialysis Unit', 'High-Risk Delivery & Special Newborn Care (SNCU)', 'Modern Central Blood Bank'],
     onDutyDoctor: {
       name: 'Dr. Tanmay Roy (MS Ortho, MCh)',

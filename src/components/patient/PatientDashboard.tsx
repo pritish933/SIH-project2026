@@ -28,6 +28,8 @@ import {
   ExternalLink,
   Award,
   Zap,
+  Bot,
+  MessageCircle,
 } from 'lucide-react';
 import { CurrentHealthStatusCard } from '../health/CurrentHealthStatusCard';
 import { ManualHealthUpdateModal } from '../health/ManualHealthUpdateModal';
@@ -41,6 +43,7 @@ import { OpdTokenSlipModal } from '../appointments/OpdTokenSlipModal';
 import { PatientSidebar, PatientSectionId } from './PatientSidebar';
 import { NearbyHospitalsSection } from './NearbyHospitalsSection';
 import { GovtSchemesSection } from './GovtSchemesSection';
+import { PatientHelpChatbot } from './PatientHelpChatbot';
 
 export function PatientDashboard() {
   const {
@@ -57,6 +60,7 @@ export function PatientDashboard() {
     isCoordinationModalOpen,
     setIsCoordinationModalOpen,
     activeCoordinationSession,
+    language,
     t,
   } = useApp();
 
@@ -172,38 +176,46 @@ export function PatientDashboard() {
                     Sub-Centre: <span className="font-semibold text-stone-800">{currentPatient.registeredFacility}</span> &bull; Village: <span className="font-semibold text-stone-800">{currentPatient.village}</span>
                   </p>
                 </div>
+              </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setActiveSection('schemes')}
-                    className="px-3.5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Award className="w-4 h-4 text-amber-700" />
-                    <span>Govt Schemes</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveSection('hospitals')}
-                    className="px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
-                  >
-                    <Building2 className="w-4 h-4 text-emerald-700" />
-                    <span>Hospitals Near Me</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveSection('appointments')}
-                    className="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-xs transition-colors flex items-center gap-2 cursor-pointer"
-                  >
-                    <CalendarPlus className="w-4 h-4" />
-                    <span>Book Doctor Consult</span>
-                  </button>
-                  <button
-                    onClick={() => setIsCoordinationModalOpen(true)}
-                    className="px-3.5 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
-                    title="Emergency Healthcare Coordination Hub"
-                  >
-                    <Zap className="w-4 h-4 text-red-600 fill-red-600" />
-                    <span>{activeCoordinationSession ? '108 War Room' : '108 Emergency SOS'}</span>
-                  </button>
+              {/* Quick Dashboard Guide Banner (InstaCure Chatbot for Navigation) */}
+              <div className="p-4 rounded-3xl bg-gradient-to-r from-teal-900 via-stone-900 to-emerald-950 border border-teal-700/40 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-11 h-11 rounded-2xl bg-teal-500/20 border border-teal-400/30 flex items-center justify-center text-emerald-300 shrink-0">
+                    <MessageCircle className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-extrabold text-sm text-white">
+                        InstaCure Chatbot
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
+                        {language === 'hi' ? 'डैशबोर्ड गाइड' : 'Dashboard Guide'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-stone-300 mt-0.5">
+                      {language === 'hi'
+                        ? 'डैशबोर्ड समझने में कोई परेशानी? पूछें: "मुझे अस्पताल जाना है", "डॉक्टर दिखाना है", "सरकारी योजनाएँ" आदि।'
+                        : language === 'bn'
+                        ? 'ড্যাশবোর্ড বুঝতে কোনো অসুবিধা? জিজ্ঞেস করুন: "হাসপাতালে যেতে চাই", "ডাক্তার দেখাবো", "সরকারি প্রকল্প" ইত্যাদি।'
+                        : 'Confused where to go? Ask: "I need a hospital", "Consult online doctor", "Govt health schemes" etc.'}
+                    </p>
+                  </div>
                 </div>
+
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-patient-help-chatbot'))}
+                  className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-stone-950 font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>
+                    {language === 'hi'
+                      ? 'InstaCure चैटबॉट से पूछें'
+                      : language === 'bn'
+                      ? 'InstaCure চ্যাটবটকে জিজ্ঞেস করুন'
+                      : 'Ask InstaCure Chatbot'}
+                  </span>
+                </button>
               </div>
 
               {/* Digital Ayushman ABHA Health Card & Frontline Care Banner */}
@@ -1053,10 +1065,17 @@ export function PatientDashboard() {
                 <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
                   <button
                     onClick={() => setIsCoordinationModalOpen(true)}
-                    className="px-5 py-3 rounded-2xl bg-white hover:bg-stone-100 text-red-700 text-xs font-black shadow-lg transition-colors flex items-center gap-2 cursor-pointer"
+                    className="px-4 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black shadow-lg transition-all flex items-center gap-2 cursor-pointer border border-white/20"
+                  >
+                    <Bot className="w-4 h-4" />
+                    <span>Emergency Voice &amp; Chat</span>
+                  </button>
+                  <button
+                    onClick={() => setIsCoordinationModalOpen(true)}
+                    className="px-4 py-3 rounded-2xl bg-white hover:bg-stone-100 text-red-700 text-xs font-black shadow-lg transition-colors flex items-center gap-2 cursor-pointer"
                   >
                     <Zap className="w-4 h-4 text-red-600 fill-red-600" />
-                    <span>{activeCoordinationSession ? 'Open 108 War Room' : 'Emergency Dispatch (SIH 133)'}</span>
+                    <span>{activeCoordinationSession ? 'Emergency Dashboard' : 'Emergency Healthcare Hub'}</span>
                   </button>
                   <button
                     onClick={() => setIsAmbulanceModalOpen(true)}
@@ -1136,20 +1155,46 @@ export function PatientDashboard() {
                     <span className="text-xs text-stone-500">Free Government Service</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-2xl bg-red-50/70 border border-red-200 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-black text-sm">
-                          108
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-red-900 to-stone-900 text-white border border-red-700/60 shadow-md space-y-3 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+                            <Bot className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-white text-sm">Emergency Voice &amp; Dialect Triage</div>
+                            <div className="text-[11px] text-red-200">Multilingual Chatbot</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-bold text-stone-900 text-sm">108 Emergency Ambulance</div>
-                          <div className="text-[11px] text-stone-600">Accidents, Heart Attacks, Severe Illness</div>
-                        </div>
+                        <p className="text-xs text-stone-300">
+                          अपनी भाषा या बोली में बताएं। ट्राइएज इंजन लक्षणों को प्रोसेस करके सही अस्पताल, बेड व एंबुलेंस भेजेगा।
+                        </p>
                       </div>
-                      <p className="text-xs text-stone-600">
-                        Dial 108 for round-the-clock emergency medical response with paramedics and basic/advanced life support.
-                      </p>
+                      <button
+                        onClick={() => setIsCoordinationModalOpen(true)}
+                        className="w-full py-2 px-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold transition-colors cursor-pointer text-center flex items-center justify-center gap-1.5 shadow-md"
+                      >
+                        <Zap className="w-3.5 h-3.5" />
+                        <span>Start Voice / Chat Triage</span>
+                      </button>
+                    </div>
+
+                    <div className="p-4 rounded-2xl bg-red-50/70 border border-red-200 space-y-3 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-xl bg-red-600 text-white flex items-center justify-center font-black text-sm">
+                            108
+                          </div>
+                          <div>
+                            <div className="font-bold text-stone-900 text-sm">108 Emergency Ambulance</div>
+                            <div className="text-[11px] text-stone-600">Accidents, Heart Attacks, Severe Illness</div>
+                          </div>
+                        </div>
+                        <p className="text-xs text-stone-600">
+                          Dial 108 for round-the-clock emergency medical response with paramedics and basic/advanced life support.
+                        </p>
+                      </div>
                       <button
                         onClick={() => setIsAmbulanceModalOpen(true)}
                         className="w-full py-2 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors cursor-pointer text-center"
@@ -1158,19 +1203,21 @@ export function PatientDashboard() {
                       </button>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">
-                          <UserCheck className="w-4 h-4" />
+                    <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-3 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">
+                            <UserCheck className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-stone-900 text-sm">Village ASHA Sangini</div>
+                            <div className="text-[11px] text-stone-600">Immediate Doorstep Assistance</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="font-bold text-stone-900 text-sm">Village ASHA Sangini</div>
-                          <div className="text-[11px] text-stone-600">Immediate Doorstep Assistance</div>
-                        </div>
+                        <p className="text-xs text-stone-600">
+                          Request your village health worker ({currentPatient.assignedAshaWorker || 'Meena Devi'}) to visit with point-of-care emergency kit.
+                        </p>
                       </div>
-                      <p className="text-xs text-stone-600">
-                        Request your village health worker ({currentPatient.assignedAshaWorker || 'Meena Devi'}) to visit with point-of-care emergency kit.
-                      </p>
                       <button
                         onClick={handleRequestAshaVisit}
                         className="w-full py-2 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors cursor-pointer text-center"
@@ -1265,6 +1312,14 @@ export function PatientDashboard() {
             }
             : undefined
         }
+      />
+
+      {/* Dashboard Help & Guidance Chatbot (Strictly No AI labeling) */}
+      <PatientHelpChatbot
+        activeSection={activeSection}
+        onNavigateSection={(sec) => setActiveSection(sec)}
+        onOpenEmergencyModal={() => setIsCoordinationModalOpen(true)}
+        patientName={currentPatient.name}
       />
     </div>
   );

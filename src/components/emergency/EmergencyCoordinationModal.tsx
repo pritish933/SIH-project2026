@@ -38,7 +38,10 @@ import {
   Layers,
   ChevronRight,
   ExternalLink,
+  Bot,
+  MessageSquare,
 } from 'lucide-react';
+import { EmergencyAIChatbot } from './EmergencyAIChatbot';
 
 export function EmergencyCoordinationModal() {
   const {
@@ -61,6 +64,9 @@ export function EmergencyCoordinationModal() {
   const [activeTab, setActiveTab] = useState<'war_room' | 'cascade_routing' | 'bed_pass' | 'live_map' | 'new_trigger'>(
     activeCoordinationSession ? 'war_room' : 'new_trigger'
   );
+
+  // Trigger screen sub-mode: AI Chatbot vs Predefined Categories
+  const [triggerMode, setTriggerMode] = useState<'ai_chatbot' | 'categories'>('ai_chatbot');
 
   // New Emergency Trigger Form State
   const [selectedCategory, setSelectedCategory] = useState<EmergencyCategory>('cardiac_arrest');
@@ -95,17 +101,24 @@ export function EmergencyCoordinationModal() {
 
   if (!isCoordinationModalOpen) return null;
 
-  const handleLaunchEmergency = (cat?: EmergencyCategory) => {
-    const categoryToUse = cat || selectedCategory;
+  const handleLaunchEmergency = (options?: {
+    category?: EmergencyCategory;
+    patientName?: string;
+    patientVillage?: string;
+    landmark?: string;
+    chiefComplaint?: string;
+  }) => {
+    const categoryToUse = options?.category || selectedCategory;
     launchEmergencyCoordination({
       category: categoryToUse,
       requesterRole: activeRole === 'asha_worker' ? 'asha_worker' : 'patient',
-      patientName: patientNameInput,
-      patientVillage: patientVillageInput,
-      landmark: landmarkInput,
-      chiefComplaint: chiefComplaintInput.trim() || undefined,
+      patientName: options?.patientName || patientNameInput,
+      patientVillage: options?.patientVillage || patientVillageInput,
+      landmark: options?.landmark || landmarkInput,
+      chiefComplaint: options?.chiefComplaint?.trim() || chiefComplaintInput.trim() || undefined,
     });
   };
+
 
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
@@ -140,7 +153,7 @@ export function EmergencyCoordinationModal() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-sm tracking-tight text-white">
-                  SIH 133: Emergency Healthcare Coordination Hub
+                  Emergency Healthcare Coordination Hub
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-900/80 border border-red-400 text-red-200">
                   Non-Diagnostic Logistics Engine
@@ -155,11 +168,6 @@ export function EmergencyCoordinationModal() {
           </div>
 
           <div className="flex items-center gap-2 self-end sm:self-auto">
-            {activeCoordinationSession && (
-              <span className="text-[11px] font-mono bg-white/10 px-2.5 py-1 rounded-xl text-red-100 border border-white/20">
-                Session: {activeCoordinationSession.id}
-              </span>
-            )}
 
             <button
               onClick={() => setIsCoordinationModalOpen(false)}
@@ -183,8 +191,8 @@ export function EmergencyCoordinationModal() {
                     : 'text-stone-600 hover:bg-stone-200/80'
                 }`}
               >
-                <Users className="w-3.5 h-3.5" />
-                <span>5-Way War Room</span>
+                <Zap className="w-3.5 h-3.5" />
+                <span>Emergency Dashboard</span>
               </button>
 
               <button
@@ -251,165 +259,210 @@ export function EmergencyCoordinationModal() {
           {/* ========================================================================= */}
           {activeTab === 'new_trigger' && (
             <div className="space-y-6 max-w-3xl mx-auto">
-              {/* Guidance Banner */}
-              <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-950 flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0">
-                  <Radio className="w-5 h-5 animate-pulse" />
-                </div>
-                <div className="text-xs leading-relaxed">
-                  <strong className="font-extrabold text-red-900 block text-sm">
-                    {isHindi
-                      ? 'आपातकालीन सहायता अनुरोध (SIH समस्या विवरण 133)'
-                      : 'Emergency Healthcare Response Trigger (SIH Problem 133)'}
-                  </strong>
-                  <span>
-                    {isHindi
-                      ? 'मरीज के GPS स्थान से नजदीकी उपयुक्त अस्पताल खोजना, डॉक्टर व टेस्ट/बेड की पुष्टि करना, रिसेप्शन पर बेड आरक्षित करना और एंबुलेंस भेजना।'
-                      : 'Finds the nearest suitable hospital, verifies doctor/facilities/beds, pre-reserves an emergency bed, and dispatches GPS ambulance.'}
-                  </span>
-                </div>
-              </div>
-
-              {/* Step 1: Select Emergency Archetype */}
-              <div className="space-y-2.5">
-                <label className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center justify-between">
-                  <span>1. {isHindi ? 'आपातकालीन प्रकार चुनें:' : 'Select Emergency Category:'}</span>
-                  <span className="text-[11px] font-normal text-stone-500">
-                    6 Rural Triage Archetypes with Resource Mapping
-                  </span>
-                </label>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {(Object.keys(EMERGENCY_ARCHETYPES) as EmergencyCategory[]).map((catKey) => {
-                    const meta = EMERGENCY_ARCHETYPES[catKey];
-                    const isSelected = selectedCategory === catKey;
-
-                    return (
-                      <div
-                        key={catKey}
-                        onClick={() => setSelectedCategory(catKey)}
-                        className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
-                          isSelected
-                            ? 'bg-white border-red-600 shadow-md ring-2 ring-red-500/20'
-                            : 'bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50'
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="p-2 rounded-xl bg-stone-100">
-                              {getCategoryIcon(meta.icon)}
-                            </div>
-                            <span
-                              className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                                meta.severity === 'CRITICAL_RED'
-                                  ? 'bg-rose-100 text-rose-800'
-                                  : 'bg-amber-100 text-amber-800'
-                              }`}
-                            >
-                              {meta.goldenHourWindowMinutes}m Golden Hr
-                            </span>
-                          </div>
-
-                          <h4 className="font-bold text-stone-900 text-xs tracking-tight">
-                            {isHindi ? meta.hindiName : meta.name}
-                          </h4>
-
-                          <div className="mt-2 text-[11px] text-stone-500 line-clamp-2">
-                            {meta.typicalComplaints[0]}
-                          </div>
-                        </div>
-
-                        <div className="mt-3 pt-2.5 border-t border-stone-100 flex items-center justify-between text-[10px]">
-                          <span className="font-semibold text-stone-700">{meta.requiredBedType.toUpperCase()} Bed</span>
-                          <span className="font-bold text-red-600">{meta.ambulanceTypeNeeded}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Step 2: Patient Location & GPS auto-detection */}
-              <div className="bg-white p-4 rounded-2xl border border-stone-200 space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-red-600" />
-                    <span>2. {isHindi ? 'मरीज का स्थान व जीपीएस:' : 'Patient GPS & Location:'}</span>
-                  </label>
-                  <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200 flex items-center gap-1">
-                    <Compass className="w-3 h-3 text-emerald-600 animate-spin" />
-                    <span>Live GPS Locked (22.0538° N, 88.0725° E)</span>
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="text-[11px] font-bold text-stone-600 block mb-1">Patient Name:</label>
-                    <input
-                      type="text"
-                      value={patientNameInput}
-                      onChange={(e) => setPatientNameInput(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-[11px] font-bold text-stone-600 block mb-1">Village / Sector:</label>
-                    <input
-                      type="text"
-                      value={patientVillageInput}
-                      onChange={(e) => setPatientVillageInput(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="text-[11px] font-bold text-stone-600 block mb-1">
-                      Local Landmark / Pickup Instructions for 108 Ambulance:
-                    </label>
-                    <input
-                      type="text"
-                      value={landmarkInput}
-                      onChange={(e) => setLandmarkInput(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
-                      placeholder="E.g., Near Primary School & Panchayat Bhawan, Gram Sihore"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label className="text-[11px] font-bold text-stone-600 block mb-1">
-                      Specific Symptoms / Chief Emergency Complaint:
-                    </label>
-                    <input
-                      type="text"
-                      value={chiefComplaintInput}
-                      onChange={(e) => setChiefComplaintInput(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
-                      placeholder={EMERGENCY_ARCHETYPES[selectedCategory].typicalComplaints[0]}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 3: Trigger CTA */}
-              <div className="pt-2">
+              {/* Dual Mode Switcher: AI Chatbot vs Predefined Categories */}
+              <div className="p-1.5 rounded-2xl bg-stone-200/80 border border-stone-300 flex items-center gap-1.5 shadow-inner">
                 <button
                   type="button"
-                  onClick={() => handleLaunchEmergency()}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-extrabold text-sm shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 cursor-pointer group"
+                  onClick={() => setTriggerMode('ai_chatbot')}
+                  className={`flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    triggerMode === 'ai_chatbot'
+                      ? 'bg-red-600 text-white shadow-md'
+                      : 'text-stone-700 hover:text-stone-900 hover:bg-stone-100'
+                  }`}
                 >
-                  <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span>
-                    {isHindi
-                      ? 'आपातकालीन समन्वय शुरू करें (अस्पताल, बेड और एंबुलेंस)'
-                      : 'Launch Emergency Coordination (Hospital + Bed + Ambulance)'}
-                  </span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <Bot className="w-4 h-4" />
+                  <span>{isHindi ? 'ट्राइएज चैटबॉट (बोलकर या लिखकर बताएं)' : 'Emergency Chatbot (Voice & Dialect)'}</span>
                 </button>
-                <div className="text-center text-[11px] text-stone-500 mt-2">
-                  ⚡ Auto-evaluates all nearby hospitals &bull; Automatic failover if nearest lacks beds &bull; Locks bed at reception
-                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setTriggerMode('categories')}
+                  className={`flex-1 py-2.5 px-3 rounded-xl font-extrabold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    triggerMode === 'categories'
+                      ? 'bg-red-600 text-white shadow-md'
+                      : 'text-stone-700 hover:text-stone-900 hover:bg-stone-100'
+                  }`}
+                >
+                  <Zap className="w-4 h-4" />
+                  <span>{isHindi ? 'सीधे श्रेणी चुनें (Predefined Categories)' : 'Predefined Categories (Direct)'}</span>
+                </button>
               </div>
+
+              {/* MODE 1: AI CONVERSATIONAL TRIAGE CHATBOT */}
+              {triggerMode === 'ai_chatbot' ? (
+                <EmergencyAIChatbot
+                  patientName={patientNameInput}
+                  patientVillage={patientVillageInput}
+                  landmark={landmarkInput}
+                  onLaunchEmergency={(params) => {
+                    handleLaunchEmergency(params);
+                  }}
+                  onSwitchToCategories={() => setTriggerMode('categories')}
+                />
+              ) : (
+                /* MODE 2: PREDEFINED CATEGORIES GRID & LOCATION FORM */
+                <div className="space-y-6 animate-in fade-in duration-150">
+                  {/* Guidance Banner */}
+                  <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-950 flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-red-600 text-white flex items-center justify-center shrink-0">
+                      <Radio className="w-5 h-5 animate-pulse" />
+                    </div>
+                    <div className="text-xs leading-relaxed">
+                      <strong className="font-extrabold text-red-900 block text-sm">
+                        {isHindi
+                          ? 'आपातकालीन सहायता अनुरोध'
+                          : 'Emergency Healthcare Response Trigger'}
+                      </strong>
+                      <span>
+                        {isHindi
+                          ? 'मरीज के GPS स्थान से नजदीकी उपयुक्त अस्पताल खोजना, डॉक्टर व टेस्ट/बेड की पुष्टि करना, रिसेप्शन पर बेड आरक्षित करना और एंबुलेंस भेजना।'
+                          : 'Finds the nearest suitable hospital, verifies doctor/facilities/beds, pre-reserves an emergency bed, and dispatches GPS ambulance.'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Step 1: Select Emergency Archetype */}
+                  <div className="space-y-2.5">
+                    <label className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center justify-between">
+                      <span>1. {isHindi ? 'आपातकालीन प्रकार चुनें:' : 'Select Emergency Category:'}</span>
+                      <span className="text-[11px] font-normal text-stone-500">
+                        6 Rural Triage Archetypes with Resource Mapping
+                      </span>
+                    </label>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {(Object.keys(EMERGENCY_ARCHETYPES) as EmergencyCategory[]).map((catKey) => {
+                        const meta = EMERGENCY_ARCHETYPES[catKey];
+                        const isSelected = selectedCategory === catKey;
+
+                        return (
+                          <div
+                            key={catKey}
+                            onClick={() => setSelectedCategory(catKey)}
+                            className={`p-3.5 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                              isSelected
+                                ? 'bg-white border-red-600 shadow-md ring-2 ring-red-500/20'
+                                : 'bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="p-2 rounded-xl bg-stone-100">
+                                  {getCategoryIcon(meta.icon)}
+                                </div>
+                                <span
+                                  className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                                    meta.severity === 'CRITICAL_RED'
+                                      ? 'bg-rose-100 text-rose-800'
+                                      : 'bg-amber-100 text-amber-800'
+                                  }`}
+                                >
+                                  {meta.goldenHourWindowMinutes}m Golden Hr
+                                </span>
+                              </div>
+
+                              <h4 className="font-bold text-stone-900 text-xs tracking-tight">
+                                {isHindi ? meta.hindiName : meta.name}
+                              </h4>
+
+                              <div className="mt-2 text-[11px] text-stone-500 line-clamp-2">
+                                {meta.typicalComplaints[0]}
+                              </div>
+                            </div>
+
+                            <div className="mt-3 pt-2.5 border-t border-stone-100 flex items-center justify-between text-[10px]">
+                              <span className="font-semibold text-stone-700">{meta.requiredBedType.toUpperCase()} Bed</span>
+                              <span className="font-bold text-red-600">{meta.ambulanceTypeNeeded}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Step 2: Patient Location & GPS auto-detection */}
+                  <div className="bg-white p-4 rounded-2xl border border-stone-200 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-red-600" />
+                        <span>2. {isHindi ? 'मरीज का स्थान व जीपीएस:' : 'Patient GPS & Location:'}</span>
+                      </label>
+                      <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200 flex items-center gap-1">
+                        <Compass className="w-3 h-3 text-emerald-600 animate-spin" />
+                        <span>Live GPS Locked (22.0538° N, 88.0725° E)</span>
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] font-bold text-stone-600 block mb-1">Patient Name:</label>
+                        <input
+                          type="text"
+                          value={patientNameInput}
+                          onChange={(e) => setPatientNameInput(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] font-bold text-stone-600 block mb-1">Village / Sector:</label>
+                        <input
+                          type="text"
+                          value={patientVillageInput}
+                          onChange={(e) => setPatientVillageInput(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="text-[11px] font-bold text-stone-600 block mb-1">
+                          Local Landmark / Pickup Instructions for 108 Ambulance:
+                        </label>
+                        <input
+                          type="text"
+                          value={landmarkInput}
+                          onChange={(e) => setLandmarkInput(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
+                          placeholder="E.g., Near Primary School & Panchayat Bhawan, Gram Sihore"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="text-[11px] font-bold text-stone-600 block mb-1">
+                          Specific Symptoms / Chief Emergency Complaint:
+                        </label>
+                        <input
+                          type="text"
+                          value={chiefComplaintInput}
+                          onChange={(e) => setChiefComplaintInput(e.target.value)}
+                          className="w-full px-3 py-2 rounded-xl bg-stone-50 border border-stone-300 text-stone-900 text-xs font-medium focus:ring-2 focus:ring-red-600 focus:outline-none"
+                          placeholder={EMERGENCY_ARCHETYPES[selectedCategory].typicalComplaints[0]}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 3: Trigger CTA */}
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => handleLaunchEmergency()}
+                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-700 hover:to-rose-800 text-white font-extrabold text-sm shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 cursor-pointer group"
+                    >
+                      <Zap className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                      <span>
+                        {isHindi
+                          ? 'आपातकालीन समन्वय शुरू करें (अस्पताल, बेड और एंबुलेंस)'
+                          : 'Launch Emergency Coordination (Hospital + Bed + Ambulance)'}
+                      </span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <div className="text-center text-[11px] text-stone-500 mt-2">
+                      ⚡ Auto-evaluates all nearby hospitals &bull; Automatic failover if nearest lacks beds &bull; Locks bed at reception
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -464,280 +517,158 @@ export function EmergencyCoordinationModal() {
                 </div>
               </div>
 
-              {/* 5-Way Synchronized Stakeholder Grid */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-stone-700 uppercase tracking-wider flex items-center gap-1.5">
-                    <Users className="w-4 h-4 text-stone-600" />
-                    <span>5-Way Live Emergency War Room</span>
-                  </h3>
-                  <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    All 5 Stakeholders Synchronized
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {/* Node 1: Patient / Family */}
-                  <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between space-y-3">
+              {/* ========================================================================= */}
+              {/* EMERGENCY COORDINATION DASHBOARD (SIH 133 SPECIFIED HIGHLIGHT CARD)       */}
+              {/* ========================================================================= */}
+              <div className="bg-gradient-to-br from-stone-950 via-stone-900 to-red-950 rounded-3xl p-5 sm:p-6 text-white border-2 border-red-500/40 shadow-2xl space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-800 pb-3.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-red-600 flex items-center justify-center font-black text-white shadow-lg shrink-0">
+                      <Zap className="w-5 h-5 fill-white" />
+                    </div>
                     <div>
-                      <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-800 flex items-center justify-center font-bold text-xs">
-                            1
-                          </div>
-                          <div>
-                            <div className="font-extrabold text-stone-900 text-xs">Patient &amp; Family</div>
-                            <div className="text-[10px] text-stone-500">Doorstep Beneficiary</div>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-                          Reassured
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-black tracking-tight text-white">
+                          Emergency Coordination Dashboard
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                          Live Active Pathway
                         </span>
                       </div>
-
-                      <p className="text-xs font-medium text-stone-800 mt-2">
-                        {activeCoordinationSession.stakeholders.patient.reassuranceNote}
+                      <p className="text-xs text-stone-400 mt-0.5">
+                        Multi-criteria zero-hop routing &bull; Synchronized hospital, 108 ambulance, doctor &amp; frontline escort
                       </p>
-
-                      <div className="mt-3 space-y-1 bg-stone-50 p-2.5 rounded-xl border border-stone-100 text-[11px] text-stone-600">
-                        <strong className="text-stone-800 block mb-0.5">Urgent Doorstep Advice:</strong>
-                        {activeCoordinationSession.stakeholders.patient.instructions.map((inst, i) => (
-                          <div key={i} className="flex items-start gap-1.5">
-                            <span className="text-blue-600 font-bold">&bull;</span>
-                            <span>{inst}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-stone-100 text-[10px] text-stone-500">
-                      Location: {activeCoordinationSession.patientLocation.village}
                     </div>
                   </div>
 
-                  {/* Node 2: ASHA Worker / Frontline */}
-                  <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between space-y-3">
-                    <div>
-                      <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">
-                            2
-                          </div>
-                          <div>
-                            <div className="font-extrabold text-stone-900 text-xs">ASHA Worker</div>
-                            <div className="text-[10px] text-stone-500">Frontline Healthcare Escort</div>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                          Alerted
-                        </span>
-                      </div>
-
-                      <div className="mt-2 text-xs">
-                        <div className="font-bold text-stone-900">{activeCoordinationSession.stakeholders.ashaWorker.name}</div>
-                        <div className="text-[11px] text-stone-500">{activeCoordinationSession.stakeholders.ashaWorker.phone}</div>
-                      </div>
-
-                      <div className="mt-3 space-y-1 bg-amber-50/60 p-2.5 rounded-xl border border-amber-100 text-[11px] text-amber-950">
-                        <strong className="block mb-0.5 font-bold text-amber-900">On-Ground Action Checklist:</strong>
-                        {activeCoordinationSession.stakeholders.ashaWorker.actionChecklist.map((chk, i) => (
-                          <div key={i} className="flex items-start gap-1.5">
-                            <CheckCircle2 className="w-3 h-3 text-amber-700 shrink-0 mt-0.5" />
-                            <span>{chk}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-stone-100 text-[10px] text-stone-500 flex items-center justify-between">
-                      <span>Doorstep Escort: Active</span>
-                      <span className="text-amber-800 font-bold">ABHA Synced</span>
-                    </div>
-                  </div>
-
-                  {/* Node 3: 108 / 102 Ambulance EMT & Pilot */}
-                  <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between space-y-3">
-                    <div>
-                      <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-red-100 text-red-800 flex items-center justify-center font-bold text-xs">
-                            3
-                          </div>
-                          <div>
-                            <div className="font-extrabold text-stone-900 text-xs">108 Ambulance Unit</div>
-                            <div className="text-[10px] text-stone-500">Pilot &amp; Onboard Paramedic</div>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200 animate-pulse">
-                          En Route
-                        </span>
-                      </div>
-
-                      <div className="mt-2 text-xs space-y-0.5">
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-stone-900">{activeCoordinationSession.ambulanceDispatch.driverName}</span>
-                          <span className="font-mono text-[11px] font-bold bg-stone-100 px-1.5 py-0.5 rounded text-stone-700">
-                            {activeCoordinationSession.ambulanceDispatch.vehicleNumber}
-                          </span>
-                        </div>
-                        <div className="text-[11px] text-stone-600">
-                          EMT: {activeCoordinationSession.ambulanceDispatch.paramedicName} ({activeCoordinationSession.ambulanceDispatch.ambulanceType})
-                        </div>
-                      </div>
-
-                      <div className="mt-3 bg-red-50 p-2.5 rounded-xl border border-red-100 text-[11px] text-red-950 space-y-1">
-                        <div className="flex items-center justify-between font-bold">
-                          <span>ETA to Patient:</span>
-                          <span className="text-red-700 text-xs">{activeCoordinationSession.ambulanceDispatch.etaMinutes} mins</span>
-                        </div>
-                        <p className="text-[10px] text-red-800">{activeCoordinationSession.stakeholders.ambulance.telemetry}</p>
-                      </div>
-                    </div>
-
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => setActiveTab('bed_pass')}
+                      className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <Bed className="w-4 h-4" />
+                      <span>Bed Reservation Pass</span>
+                    </button>
                     <button
                       onClick={() => setActiveTab('live_map')}
-                      className="w-full py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-[11px] flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+                      className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                     >
-                      <Navigation className="w-3.5 h-3.5 text-red-600" />
-                      <span>Live Track on Map</span>
+                      <Navigation className="w-4 h-4" />
+                      <span>Live Track Ambulance</span>
                     </button>
                   </div>
+                </div>
 
-                  {/* Node 4: Hospital Emergency Reception Desk */}
-                  <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between space-y-3">
-                    <div>
-                      <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
-                            4
-                          </div>
-                          <div>
-                            <div className="font-extrabold text-stone-900 text-xs">Hospital Reception</div>
-                            <div className="text-[10px] text-stone-500">Casualty Emergency Desk</div>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                          Bed Locked
-                        </span>
+                {/* 5-Point Core Real-Time Status Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                  {/* 1. 🚑 Ambulance: En Route */}
+                  <div className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="w-8 h-8 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-red-400">
+                        <Ambulance className="w-4 h-4 animate-pulse" />
                       </div>
-
-                      <div className="mt-2 text-xs">
-                        <div className="font-bold text-stone-900">{activeCoordinationSession.selectedHospital.hospitalName}</div>
-                        <div className="text-[11px] text-emerald-700 font-bold">
-                          Reserved Bed: {activeCoordinationSession.bedReservation.bedNumber} ({activeCoordinationSession.bedReservation.bedType.toUpperCase()})
-                        </div>
-                      </div>
-
-                      <div className="mt-3 bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-100 text-[11px] text-emerald-950 space-y-1">
-                        <div className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span>Pre-arrival notice accepted by desk</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span>Stretcher &amp; Oxygen team ready at Ramp</span>
-                        </div>
-                      </div>
+                      <span className="text-[10px] font-bold font-mono text-stone-400">
+                        {activeCoordinationSession.ambulanceDispatch.ambulanceType}
+                      </span>
                     </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => acknowledgeBedReservation(activeCoordinationSession.bedReservation.reservationToken)}
-                        className="flex-1 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] cursor-pointer transition-colors text-center"
-                      >
-                        Confirm Bay Ready
-                      </button>
-                      <button
-                        onClick={() => setIsHospitalReceptionViewOpen(true)}
-                        className="px-2.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-[11px] font-bold cursor-pointer transition-colors"
-                        title="Open Full Reception Casualty Desk"
-                      >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </button>
+                    <div className="text-[10px] uppercase font-bold text-stone-400 pt-1">
+                      108 Ambulance Unit
+                    </div>
+                    <div className="font-black text-sm text-red-400 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                      <span>🚑 Ambulance: En Route</span>
+                    </div>
+                    <div className="text-[11px] text-stone-300 font-mono truncate">
+                      {activeCoordinationSession.ambulanceDispatch.vehicleNumber} ({activeCoordinationSession.ambulanceDispatch.driverName.split(' ')[0]})
                     </div>
                   </div>
 
-                  {/* Node 5: On-Duty Specialist Doctor */}
-                  <div className="bg-white p-4 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between space-y-3">
-                    <div>
-                      <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center font-bold text-xs">
-                            5
-                          </div>
-                          <div>
-                            <div className="font-extrabold text-stone-900 text-xs">On-Duty Doctor</div>
-                            <div className="text-[10px] text-stone-500">Specialist Casualty Lead</div>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
-                          Pre-Briefed
-                        </span>
+                  {/* 2. 🏥 Hospital: Bed Reserved */}
+                  <div className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="w-8 h-8 rounded-xl bg-emerald-600/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                        <Building2 className="w-4 h-4" />
                       </div>
-
-                      <div className="mt-2 text-xs">
-                        <div className="font-bold text-stone-900">{activeCoordinationSession.selectedHospital.doctorName}</div>
-                        <div className="text-[11px] text-purple-700">{activeCoordinationSession.selectedHospital.doctorSpecialty}</div>
-                      </div>
-
-                      <div className="mt-3 bg-purple-50/70 p-2.5 rounded-xl border border-purple-100 text-[11px] text-purple-950 space-y-1">
-                        <strong className="block font-bold text-purple-900">Clinical Pre-Brief:</strong>
-                        <p className="text-[10px] leading-snug">{activeCoordinationSession.stakeholders.doctor.clinicalPreBrief}</p>
-                      </div>
+                      <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded">
+                        Pre-Arrival Locked
+                      </span>
                     </div>
-
-                    <div className="pt-2 border-t border-stone-100 text-[10px] text-stone-500 flex items-center justify-between">
-                      <span>Status: On Duty in Casualty</span>
-                      <span className="text-purple-800 font-bold">Trauma Bay Armed</span>
+                    <div className="text-[10px] uppercase font-bold text-stone-400 pt-1">
+                      Casualty Reception
+                    </div>
+                    <div className="font-black text-sm text-emerald-400 flex items-center gap-1">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>🏥 Hospital: Bed Reserved</span>
+                    </div>
+                    <div className="text-[11px] text-amber-300 font-mono font-bold truncate">
+                      {activeCoordinationSession.bedReservation.bedNumber} ({activeCoordinationSession.selectedHospital.hospitalName.slice(0, 18)}...)
                     </div>
                   </div>
 
-                  {/* Node 6: AI Cascade Summary & Metrics */}
-                  <div className="bg-gradient-to-br from-stone-900 to-stone-800 text-white p-4 rounded-2xl border border-stone-700 shadow-xs flex flex-col justify-between space-y-3">
-                    <div>
-                      <div className="flex items-center justify-between pb-2 border-b border-stone-700">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs border border-amber-500/30">
-                            <Zap className="w-4 h-4 text-amber-400 fill-amber-400" />
-                          </div>
-                          <div>
-                            <div className="font-extrabold text-white text-xs">Cascade Logistics Core</div>
-                            <div className="text-[10px] text-stone-400">Zero-Hop Optimization</div>
-                          </div>
-                        </div>
-                        <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-700">
-                          {activeCoordinationSession.timeSavedMinutes}m Saved
-                        </span>
+                  {/* 3. 👨‍⚕️ Doctor: Notified */}
+                  <div className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="w-8 h-8 rounded-xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                        <Stethoscope className="w-4 h-4" />
                       </div>
-
-                      <div className="mt-2 space-y-1 text-xs">
-                        <div className="text-stone-300 text-[11px]">
-                          Cascade Failovers: <strong className="text-amber-400 font-mono">{activeCoordinationSession.cascadeCount} skipped</strong>
-                        </div>
-                        <div className="text-[10px] text-stone-400">
-                          Eliminated blind physical visits to inadequate facilities lacking ICU or specialists.
-                        </div>
-                      </div>
-
-                      <div className="mt-3 p-2 rounded-xl bg-stone-800/80 border border-stone-700 text-[11px] text-stone-300 space-y-1">
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span>Golden Hour Window:</span>
-                          <span className="font-bold text-white">{activeCoordinationSession.categoryMeta.goldenHourWindowMinutes} mins</span>
-                        </div>
-                        <div className="w-full bg-stone-700 rounded-full h-1.5 overflow-hidden">
-                          <div className="bg-emerald-500 h-1.5 rounded-full" style={{ width: '75%' }}></div>
-                        </div>
-                      </div>
+                      <span className="text-[10px] font-bold text-purple-300">
+                        On-Duty Lead
+                      </span>
                     </div>
+                    <div className="text-[10px] uppercase font-bold text-stone-400 pt-1">
+                      Specialist Casualty
+                    </div>
+                    <div className="font-black text-sm text-purple-300 flex items-center gap-1">
+                      <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
+                      <span>👨‍⚕️ Doctor: Notified</span>
+                    </div>
+                    <div className="text-[11px] text-stone-300 truncate">
+                      {activeCoordinationSession.selectedHospital.doctorName}
+                    </div>
+                  </div>
 
-                    <button
-                      onClick={() => setActiveTab('cascade_routing')}
-                      className="w-full py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold text-[11px] flex items-center justify-center gap-1 cursor-pointer transition-colors"
-                    >
-                      <span>Review Cascade Audit Trail</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                  {/* 4. 👩‍⚕️ ASHA: Alerted */}
+                  <div className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="w-8 h-8 rounded-xl bg-amber-600/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+                        <Users className="w-4 h-4" />
+                      </div>
+                      <span className="text-[10px] font-bold text-amber-300">
+                        ABHA Synced
+                      </span>
+                    </div>
+                    <div className="text-[10px] uppercase font-bold text-stone-400 pt-1">
+                      Frontline Care Worker
+                    </div>
+                    <div className="font-black text-sm text-amber-400 flex items-center gap-1">
+                      <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>👩‍⚕️ ASHA: Alerted</span>
+                    </div>
+                    <div className="text-[11px] text-stone-300 truncate">
+                      {activeCoordinationSession.stakeholders.ashaWorker.name}
+                    </div>
+                  </div>
+
+                  {/* 5. 📍 ETA: 5 min */}
+                  <div className="p-3.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all space-y-1">
+                    <div className="flex items-center justify-between">
+                      <div className="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
+                        <Clock className="w-4 h-4 animate-pulse" />
+                      </div>
+                      <span className="text-[10px] font-bold text-blue-300">
+                        GPS Active
+                      </span>
+                    </div>
+                    <div className="text-[10px] uppercase font-bold text-stone-400 pt-1">
+                      Estimated Pickup
+                    </div>
+                    <div className="font-black text-sm text-blue-400 flex items-center gap-1">
+                      <MapPin className="w-4 h-4 text-blue-400 shrink-0" />
+                      <span>📍 ETA: {activeCoordinationSession.ambulanceDispatch.etaMinutes} min</span>
+                    </div>
+                    <div className="text-[11px] text-stone-300 truncate">
+                      Distance: {activeCoordinationSession.selectedHospital.distanceKm} km away
+                    </div>
                   </div>
                 </div>
               </div>

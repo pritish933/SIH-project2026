@@ -362,9 +362,6 @@ export interface FollowUpTask {
   sourceReferralId?: string;
 }
 
-// ============================================================================
-// SIH PROBLEM STATEMENT 133: AI-POWERED EMERGENCY HEALTHCARE COORDINATION TYPES
-// ============================================================================
 
 export type EmergencyCategory =
   | 'trauma_accident'

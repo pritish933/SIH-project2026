@@ -38,6 +38,7 @@ import {
 import { INITIAL_APPOINTMENTS, DOCTOR_PROFILES } from '../data/appointmentData';
 import { INITIAL_FEEDBACKS } from '../data/feedbackData';
 import { INITIAL_FOLLOW_UP_TASKS } from '../data/followUpData';
+import { HospitalFacility, NEARBY_HOSPITALS_DATA } from '../data/hospitalData';
 import { getTranslation } from '../utils/translations';
 
 interface AppContextType {
@@ -167,6 +168,27 @@ interface AppContextType {
   setIsCoordinationModalOpen: (open: boolean) => void;
   setIsHospitalReceptionViewOpen: (open: boolean) => void;
   triggerAiEmergencyCoordination: (category?: EmergencyCategory) => void;
+  hospitals: HospitalFacility[];
+  updateHospitalAvailability: (
+    hospitalId: string,
+    updates: {
+      availableBeds?: {
+        general?: number;
+        oxygen?: number;
+        icu?: number;
+        emergency?: number;
+      };
+      ambulancesCount?: number;
+      staff?: {
+        doctorsOnDutyCount?: number;
+        emergencyTeamCount?: number;
+        isDoctorAvailable?: boolean;
+        activeDoctorName?: string;
+        activeDoctorSpecialty?: string;
+      };
+      onDutyDoctorStatus?: 'On Duty' | 'On Call' | 'In Surgery';
+    }
+  ) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -200,6 +222,64 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [activeCoordinationSession, setActiveCoordinationSession] = useState<EmergencyCoordinationSession | null>(null);
   const [isCoordinationModalOpen, setIsCoordinationModalOpen] = useState(false);
   const [isHospitalReceptionViewOpen, setIsHospitalReceptionViewOpen] = useState(false);
+
+  // Hospital Resources, Beds & Doctor Live Availability State
+  const [hospitals, setHospitals] = useState<HospitalFacility[]>(NEARBY_HOSPITALS_DATA);
+
+  const updateHospitalAvailability = (
+    hospitalId: string,
+    updates: {
+      availableBeds?: {
+        general?: number;
+        oxygen?: number;
+        icu?: number;
+        emergency?: number;
+      };
+      ambulancesCount?: number;
+      staff?: {
+        doctorsOnDutyCount?: number;
+        emergencyTeamCount?: number;
+        isDoctorAvailable?: boolean;
+        activeDoctorName?: string;
+        activeDoctorSpecialty?: string;
+      };
+      onDutyDoctorStatus?: 'On Duty' | 'On Call' | 'In Surgery';
+    }
+  ) => {
+    setHospitals((prevHospitals) =>
+      prevHospitals.map((hosp) => {
+        if (hosp.id !== hospitalId) return hosp;
+
+        const updatedBeds = {
+          ...hosp.availableBeds,
+          ...(updates.availableBeds || {}),
+        };
+
+        const updatedStaff = {
+          ...hosp.staff,
+          ...(updates.staff || {}),
+        };
+
+        const updatedOnDutyDoctor = {
+          ...hosp.onDutyDoctor,
+          ...(updates.staff?.activeDoctorName ? { name: updates.staff.activeDoctorName } : {}),
+          ...(updates.staff?.activeDoctorSpecialty ? { specialty: updates.staff.activeDoctorSpecialty } : {}),
+          ...(updates.onDutyDoctorStatus ? { status: updates.onDutyDoctorStatus } : {}),
+        };
+
+        return {
+          ...hosp,
+          availableBeds: updatedBeds,
+          ambulancesCount:
+            updates.ambulancesCount !== undefined ? updates.ambulancesCount : hosp.ambulancesCount,
+          staff: updatedStaff,
+          onDutyDoctor: updatedOnDutyDoctor,
+          lastUpdatedMinutesAgo: 0,
+          lastUpdatedTimestamp: new Date().toISOString(),
+        };
+      })
+    );
+  };
 
   // Initialize Doctor Availability from DOCTOR_PROFILES + DEMO_USERS
   const [doctorAvailabilityMap, setDoctorAvailabilityMap] = useState<Record<string, DoctorAvailabilityInfo>>(() => {
@@ -1122,6 +1202,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setIsCoordinationModalOpen,
         setIsHospitalReceptionViewOpen,
         triggerAiEmergencyCoordination,
+        hospitals,
+        updateHospitalAvailability,
       }}
     >
       {children}

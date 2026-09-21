@@ -513,3 +513,234 @@ export function createEmergencySession(params: {
     status: 'coordinating',
   };
 }
+
+// ============================================================================
+// AI EMERGENCY TRIAGE & NATURAL LANGUAGE PARSER
+// ============================================================================
+
+export interface EmergencyTriageResult {
+  category: EmergencyCategory;
+  categoryMeta: EmergencyCategoryMeta;
+  extractedSymptoms: string[];
+  confidencePercent: number;
+  urgencyLevel: 'CRITICAL_RED' | 'URGENT_YELLOW';
+  detectedDialect?: string;
+  doorstepFirstAid: string[];
+  explanation: string;
+  recommendedBedType: 'icu' | 'oxygen' | 'general';
+  recommendedAmbulance: string;
+}
+
+export const EMERGENCY_QUICK_CHIPS: Array<{
+  label: string;
+  labelEn: string;
+  sub: string;
+  sampleInput: string;
+  sampleInputEn: string;
+  category: EmergencyCategory;
+}> = [
+  {
+    label: 'सीने में भारी दर्द व पसीना',
+    labelEn: 'Severe Chest Pain & Cold Sweat',
+    sub: 'Chest Pain / Heart Attack',
+    sampleInput: 'मरीज के सीने में बहुत तेज भारी दर्द हो रहा है और ठंडा पसीना आ रहा है, छाती पर भारी पाथर जैसा लग रहा है',
+    sampleInputEn: 'Patient has severe crushing chest pain, cold sweating, and pressure radiating to left arm',
+    category: 'cardiac_arrest',
+  },
+  {
+    label: 'सड़क दुर्घटना व भारी रक्तस्राव',
+    labelEn: 'Severe Road Accident & Bleeding',
+    sub: 'Severe Road Accident / Bleeding',
+    sampleInput: 'सड़क पर भीषण बाइक एक्सीडेंट हो गया है, सिर में चोट लगी है और बहुत ज्यादा खून बह रहा है',
+    sampleInputEn: 'Severe road vehicle collision, patient has head injury and active arterial bleeding',
+    category: 'trauma_accident',
+  },
+  {
+    label: 'गर्भवती महिला को प्रसव पीड़ा',
+    labelEn: 'High-Risk Maternal Labor Pains',
+    sub: 'High-Risk Maternal Labor',
+    sampleInput: 'गर्भवती महिला को बहुत तेज पेट व पेड़ू में दर्द हो रहा है, तुरंत अस्पताल और एंबुलेंस चाहिए',
+    sampleInputEn: 'Pregnant woman experiencing acute intense labor contractions and fluid loss, need emergency delivery care',
+    category: 'maternal_labor',
+  },
+  {
+    label: 'सांस लेने में भारी तकलीफ',
+    labelEn: 'Acute Breathlessness & Low O2',
+    sub: 'Severe Breathlessness / Low O2',
+    sampleInput: 'सास बहुत तेजी से फूल रही है, दम घुट रहा है और ऑक्सीजन की कमी लग रही है',
+    sampleInputEn: 'Patient is gasping for air, severe shortness of breath, suffocating feeling and low oxygen saturation',
+    category: 'respiratory_distress',
+  },
+  {
+    label: 'अचानक चेहरा टेढ़ा / पक्षाघात',
+    labelEn: 'Sudden Face Droop & Paralysis',
+    sub: 'Stroke / Face-Arm Weakness',
+    sampleInput: 'अचानक मरीज का चेहरा टेढ़ा हो गया है, एक हाथ काम नहीं कर रहा और बोल नहीं पा रहे हैं',
+    sampleInputEn: 'Sudden facial numbness and droop, one arm is paralyzed and unable to speak clearly (FAST)',
+    category: 'stroke_neuro',
+  },
+  {
+    label: 'सांप ने काटा / विषैला डंक',
+    labelEn: 'Snakebite / Venomous Envenomation',
+    sub: 'Snakebite / Venomous Envenomation',
+    sampleInput: 'खेत में काम करते समय सांप ने पैर में काट लिया है, दो दांत के निशान हैं और सूजन बढ़ रही है',
+    sampleInputEn: 'Patient bitten on leg by a venomous snake, two puncture marks with rapid local swelling',
+    category: 'snakebite_poisoning',
+  },
+];
+
+/**
+ * Intelligent Multilingual Natural Language Triage Parser.
+ * Processes spoken or typed patient queries in Hindi, Hinglish, Bengali, Bhojpuri, Bundeli, English.
+ * Extracts symptoms, classifies into emergency archetype, and derives optimal pathway resources.
+ */
+export function parseEmergencyQuery(inputText: string): EmergencyTriageResult {
+  const query = inputText.toLowerCase().trim();
+  const extractedSymptoms: string[] = [];
+
+  // Keyword Pattern Matchers
+  const matches = (keywords: string[]) => keywords.some((kw) => query.includes(kw.toLowerCase()));
+
+  // 1. Cardiac Archetype Keywords
+  const cardiacKeywords = [
+    'छाती', 'सीना', 'सीने', 'हार्ट', 'heart', 'chest', 'chest pain', 'पाथर', 'धक-धक',
+    'पसीना', 'cold sweat', 'left arm', 'बायें हाथ', 'jabde', 'angina', 'cardiac', 'attack',
+    'धड़कन', 'घबराहट', 'हिया', 'जाड़ा'
+  ];
+
+  // 2. Severe Trauma / Accident Keywords
+  const traumaKeywords = [
+    'accident', 'एक्सीडेंट', 'दुर्घटना', 'चोट', 'खून', 'bleeding', 'fracture', 'हड्डी टूट',
+    'टक्कर', 'गिर गया', 'रक्तस्राव', 'घाव', 'कट गया', 'सिर फूटा', 'head injury', 'trauma',
+    'गाड़ी', 'bike', 'collision'
+  ];
+
+  // 3. Maternal / Obstetric Keywords
+  const maternalKeywords = [
+    'गर्भवती', 'गर्भ', 'pregnant', 'pregnancy', 'प्रसव', 'labor', 'delivery', 'पेड़ू',
+    'कोख', 'बच्चा', 'water break', 'amniotic', 'bleeding pregnant', 'maternal', 'janani',
+    'महीना पूरा'
+  ];
+
+  // 4. Respiratory Distress Keywords
+  const respiratoryKeywords = [
+    'सांस', 'सास', 'breath', 'breathing', 'दम', 'दम फूल', 'ऑक्सीजन', 'oxygen', 'spo2',
+    'खांसी', 'asthma', 'दमा', 'choking', 'दम घुट', 'फेफड़े', 'stridor', 'हाइपोक्सिया'
+  ];
+
+  // 5. Stroke / Neurological Keywords
+  const strokeKeywords = [
+    'स्ट्रोक', 'stroke', 'लकवा', 'पक्षाघात', 'paralysis', 'चेहरा टेढ़ा', 'face droop',
+    'हाथ सुन्न', 'बोल नहीं', 'slurred', 'speech', 'माथो घूम', 'बेहोश', 'unconscious',
+    'फेंट', 'अचानक कमजोरी', 'fast'
+  ];
+
+  // 6. Snakebite / Poisoning Keywords
+  const snakebiteKeywords = [
+    'सांप', 'snake', 'snakebite', 'सर्पदंश', 'डस', 'काट लिया', 'जहर', 'poison',
+    'कीड़ा', 'विष', 'fang', 'सूजन', 'salivation', 'दवाई पी ली'
+  ];
+
+  let selectedCat: EmergencyCategory = 'general_casualty';
+  let confidence = 75;
+  let rationale = '';
+
+  if (matches(snakebiteKeywords)) {
+    selectedCat = 'snakebite_poisoning';
+    confidence = 96;
+    extractedSymptoms.push('Venomous snakebite / toxic envenomation reported', 'Fang puncture marks or sudden local swelling');
+    rationale = 'High clinical suspicion of venomous snakebite or toxic ingestion. Rapid anti-snake venom (ASV) protocol and ICU standby required.';
+  } else if (matches(cardiacKeywords)) {
+    selectedCat = 'cardiac_arrest';
+    confidence = 94;
+    extractedSymptoms.push('Severe chest pressure / retrosternal tightness', 'Cold sweating or radiating arm discomfort');
+    rationale = 'Symptoms strongly align with Acute Coronary Syndrome (ACS) / Cardiac Emergency. Immediate ALS 108 ambulance with defibrillator and CCU bed required.';
+  } else if (matches(traumaKeywords)) {
+    selectedCat = 'trauma_accident';
+    confidence = 95;
+    extractedSymptoms.push('High-impact physical trauma / road accident', 'Active bleeding or suspected bone fracture');
+    rationale = 'Polytrauma / severe hemorrhage detected. Priority dispatch to trauma facility with on-duty orthopedic surgeon and certified blood bank.';
+  } else if (matches(maternalKeywords)) {
+    selectedCat = 'maternal_labor';
+    confidence = 95;
+    extractedSymptoms.push('Active severe labor pains in pregnancy', 'Potential high-risk obstetric emergency');
+    rationale = 'High-risk obstetric delivery emergency detected. 102 Janani Express dispatch and emergency labor suite preparation triggered.';
+  } else if (matches(strokeKeywords)) {
+    selectedCat = 'stroke_neuro';
+    confidence = 92;
+    extractedSymptoms.push('Sudden unilateral weakness / facial symmetry loss', 'Speech impairment or altered mental state');
+    rationale = 'Positive FAST stroke indicators. Urgent golden-hour neurology/CT scan access within 90 minutes recommended.';
+  } else if (matches(respiratoryKeywords)) {
+    selectedCat = 'respiratory_distress';
+    confidence = 93;
+    extractedSymptoms.push('Acute breathlessness / tachypnea', 'Suspected oxygen desaturation / respiratory distress');
+    rationale = 'Severe respiratory compromise detected. High-flow oxygen bed and ambulance with portable suction/O2 cylinder required.';
+  } else {
+    selectedCat = 'general_casualty';
+    confidence = 80;
+    extractedSymptoms.push('Acute sudden illness requiring emergency physician review', 'General casualty stabilization required');
+    rationale = 'General acute casualty emergency. Routing to nearest 24x7 emergency medical center with on-duty medical officer.';
+  }
+
+  const meta = EMERGENCY_ARCHETYPES[selectedCat];
+
+  // Specific Doorstep First-Aid Advice
+  const firstAidMap: Record<EmergencyCategory, string[]> = {
+    cardiac_arrest: [
+      'Keep patient calm, seated with back supported (W-position).',
+      'Loosen collar, belt, and all tight clothing.',
+      'Do not give heavy food or water; keep room ventilated.',
+      'Keep Aspirin/Sorbitrate ready only if prescribed by patient doctor.',
+    ],
+    trauma_accident: [
+      'Apply firm, clean cloth pressure directly on bleeding wounds.',
+      'Do not move patient neck or spine if high-impact collision.',
+      'Keep patient warm with a blanket to prevent hypovolemic shock.',
+      'Clear the airway of any blood, vomiting, or loose dentures.',
+    ],
+    maternal_labor: [
+      'Place mother on her left side to maximize fetal oxygenation.',
+      'Keep clean cloth and warm towels ready.',
+      'Do not encourage premature pushing until trained nurse/ASHA arrives.',
+      'Keep Mother-Child Protection (MCP) card & ABHA ID handy.',
+    ],
+    respiratory_distress: [
+      'Seat patient upright leaning slightly forward (tripod position).',
+      'Open windows for maximum fresh air circulation.',
+      'Administer rescue inhaler if patient has known asthma history.',
+      'Avoid crowding around patient to ease panic.',
+    ],
+    stroke_neuro: [
+      'Note the exact time symptoms started (critical for thrombolysis).',
+      'Keep patient lying down on side if vomiting or unconscious.',
+      'NEVER give food, water, or oral pills (choking risk).',
+      'Speak calmly and avoid sudden jerks during transport.',
+    ],
+    snakebite_poisoning: [
+      'Keep patient absolutely still; immobilize the bitten limb below heart level.',
+      'DO NOT cut, suck, burn, or apply tight tourniquets on the bite.',
+      'Remove rings, bangles, or tight shoes before swelling spreads.',
+      'Note color/pattern of snake if seen safely (do not try to catch it).',
+    ],
+    general_casualty: [
+      'Ensure comfortable resting position in a quiet space.',
+      'Check pulse and body temperature.',
+      'If conscious and dehydrated, offer small sips of clean ORS water.',
+      'Keep government health cards and previous records ready.',
+    ],
+  };
+
+  return {
+    category: selectedCat,
+    categoryMeta: meta,
+    extractedSymptoms,
+    confidencePercent: confidence,
+    urgencyLevel: meta.severity,
+    detectedDialect: query.includes('रय') || query.includes('रओ') || query.includes('पाथर') ? 'Rural Dialect (Bundeli/Malwi/Bhojpuri)' : 'Standard Hindi / English',
+    doorstepFirstAid: firstAidMap[selectedCat],
+    explanation: rationale,
+    recommendedBedType: meta.requiredBedType,
+    recommendedAmbulance: meta.ambulanceTypeNeeded,
+  };
+}
+

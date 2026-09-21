@@ -39,7 +39,7 @@ import { useApp } from '../../context/AppContext';
 import { HospitalAIChatbot } from './HospitalAIChatbot';
 
 export function NearbyHospitalsSection() {
-  const { language, setIsAmbulanceModalOpen, t } = useApp();
+  const { language, setIsAmbulanceModalOpen, t, hospitals } = useApp();
   const isHindi = language === 'hi';
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,7 +51,7 @@ export function NearbyHospitalsSection() {
   const [viewMode, setViewMode] = useState<'map' | 'grid' | 'radar'>('map');
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState<HospitalFacility | null>(
-    NEARBY_HOSPITALS_DATA[0] // Dr. B.C. Roy Hospital next to HIT
+    (hospitals && hospitals[0]) || NEARBY_HOSPITALS_DATA[0] // Dr. B.C. Roy Hospital next to HIT
   );
   const [mapZoom, setMapZoom] = useState<number>(14);
 
@@ -62,7 +62,7 @@ export function NearbyHospitalsSection() {
 
   // Filtered hospital facilities
   const filteredHospitals = useMemo(() => {
-    return NEARBY_HOSPITALS_DATA.filter((hosp) => {
+    return (hospitals && hospitals.length > 0 ? hospitals : NEARBY_HOSPITALS_DATA).filter((hosp) => {
       // Search query
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -645,7 +645,7 @@ export function NearbyHospitalsSection() {
             </div>
 
             {/* Hospital Markers on the Radar Map */}
-            {NEARBY_HOSPITALS_DATA.map((hosp) => {
+            {(hospitals && hospitals.length > 0 ? hospitals : NEARBY_HOSPITALS_DATA).map((hosp) => {
               const isSelected = selectedHospital?.id === hosp.id;
               const isMatchesFilter = filteredHospitals.some((f) => f.id === hosp.id);
 
@@ -788,49 +788,108 @@ export function NearbyHospitalsSection() {
                       </p>
                     </div>
 
-                    {/* Bed Availability Grid */}
-                    <div className="mt-4 p-3 rounded-2xl bg-stone-50 border border-stone-150">
+                    {/* Bed & Resource Availability Grid */}
+                    <div className="mt-4 p-3 rounded-2xl bg-stone-50 border border-stone-200">
                       <div className="flex items-center justify-between text-[11px] font-bold text-stone-600 uppercase tracking-wider mb-2">
-                        <span className="flex items-center gap-1">
-                          <Bed className="w-3.5 h-3.5 text-stone-500" />
-                          {isHindi ? 'लाइव बेड उपलब्धता (डेमो)' : 'Bed Availability (Demo)'}
+                        <span className="flex items-center gap-1.5 text-teal-800">
+                          <Bed className="w-3.5 h-3.5 text-teal-700" />
+                          <span>{isHindi ? 'लाइव संसाधन व बेड (एडमिन अपडेट)' : 'Live Resources & Beds'}</span>
                         </span>
                         <span className="text-stone-400 font-normal">Total Beds: {hosp.totalBeds}</span>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2 text-center">
+                      {/* 4-Column Grid: ICU, Oxygen, General, Emergency */}
+                      <div className="grid grid-cols-4 gap-1.5 text-center">
                         <div className="p-2 rounded-xl bg-white border border-stone-200 shadow-2xs">
-                          <div className="text-xs font-bold text-stone-800">
-                            {hosp.availableBeds.general}
+                          <div className={`text-xs font-bold ${hosp.availableBeds.icu > 0 ? 'text-blue-700' : 'text-stone-400'}`}>
+                            {hosp.availableBeds.icu > 0 ? hosp.availableBeds.icu : '0'}
                           </div>
-                          <div className="text-[10px] text-stone-500">General Beds</div>
+                          <div className="text-[10px] text-stone-500">ICU Beds</div>
                         </div>
                         <div className="p-2 rounded-xl bg-white border border-stone-200 shadow-2xs">
                           <div className="text-xs font-bold text-emerald-700">
                             {hosp.availableBeds.oxygen}
                           </div>
-                          <div className="text-[10px] text-emerald-800">Oxygen Beds</div>
+                          <div className="text-[10px] text-stone-500">Oxygen</div>
                         </div>
                         <div className="p-2 rounded-xl bg-white border border-stone-200 shadow-2xs">
-                          <div className={`text-xs font-bold ${hosp.availableBeds.icu > 0 ? 'text-blue-700' : 'text-stone-400'}`}>
-                            {hosp.availableBeds.icu > 0 ? hosp.availableBeds.icu : '0 / NA'}
+                          <div className="text-xs font-bold text-purple-700">
+                            {hosp.availableBeds.general}
                           </div>
-                          <div className="text-[10px] text-stone-500">ICU / Ventilator</div>
+                          <div className="text-[10px] text-stone-500">General</div>
                         </div>
+                        <div className="p-2 rounded-xl bg-white border border-stone-200 shadow-2xs">
+                          <div className="text-xs font-bold text-red-700">
+                            {hosp.availableBeds.emergency || 4}
+                          </div>
+                          <div className="text-[10px] text-stone-500">Emergency</div>
+                        </div>
+                      </div>
+
+                      {/* Ambulances & Last Updated Telemetry Strip */}
+                      <div className="mt-2.5 pt-2 border-t border-stone-200/80 flex items-center justify-between text-[11px] font-mono">
+                        <span className="flex items-center gap-1 font-semibold text-amber-800">
+                          <Ambulance className="w-3.5 h-3.5 text-amber-600" />
+                          <span>{hosp.ambulancesCount || 2} Ambulances at Bay</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-stone-500">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                          <span>
+                            {isHindi ? 'अपडेट:' : 'Updated:'}{' '}
+                            <strong className="text-stone-700">
+                              {hosp.lastUpdatedMinutesAgo === 0
+                                ? (isHindi ? 'अभी-अभी' : 'Just now')
+                                : `${hosp.lastUpdatedMinutesAgo || 2} ${isHindi ? 'मिनट पहले' : 'min ago'}`}
+                            </strong>
+                          </span>
+                        </span>
                       </div>
                     </div>
 
-                    {/* On Duty Doctor & Key Specialities */}
+                    {/* On Duty Doctor & Staff Status */}
                     <div className="mt-3 space-y-2">
-                      <div className="flex items-center justify-between text-xs bg-emerald-50/50 p-2 rounded-xl border border-emerald-150">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <Stethoscope className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                          <span className="font-semibold text-stone-800 truncate">
-                            {hosp.onDutyDoctor.name}
-                          </span>
+                      <div
+                        className={`flex items-center justify-between text-xs p-2.5 rounded-2xl border ${
+                          (hosp.staff?.doctorsOnDutyCount || 0) > 0 && (hosp.staff?.isDoctorAvailable ?? true)
+                            ? 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
+                            : 'bg-rose-50 border-rose-200 text-rose-950'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Stethoscope
+                            className={`w-4 h-4 shrink-0 ${
+                              (hosp.staff?.doctorsOnDutyCount || 0) > 0 && (hosp.staff?.isDoctorAvailable ?? true)
+                                ? 'text-emerald-700'
+                                : 'text-rose-600'
+                            }`}
+                          />
+                          <div className="truncate">
+                            <div className="font-bold flex items-center gap-1.5">
+                              <span>
+                                {(hosp.staff?.doctorsOnDutyCount || 0) > 0 && (hosp.staff?.isDoctorAvailable ?? true)
+                                  ? (isHindi
+                                      ? `डॉक्टर उपलब्ध (${hosp.staff?.doctorsOnDutyCount || 1} ड्यूटी पर)`
+                                      : `Doctor Available (${hosp.staff?.doctorsOnDutyCount || 1} on duty)`)
+                                  : (isHindi ? 'डॉक्टर उपलब्ध नहीं / ऑफ ड्यूटी' : 'No Doctor Currently On Duty')}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-stone-600 truncate mt-0.5">
+                              {hosp.staff?.activeDoctorName || hosp.onDutyDoctor.name} &bull;{' '}
+                              {hosp.staff?.activeDoctorSpecialty || hosp.onDutyDoctor.specialty}
+                            </div>
+                          </div>
                         </div>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shrink-0">
-                          {hosp.onDutyDoctor.status}
+
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold shrink-0 border ${
+                            (hosp.staff?.doctorsOnDutyCount || 0) > 0 && (hosp.staff?.isDoctorAvailable ?? true)
+                              ? 'bg-emerald-600 text-white border-emerald-500'
+                              : 'bg-rose-600 text-white border-rose-500'
+                          }`}
+                        >
+                          {(hosp.staff?.doctorsOnDutyCount || 0) > 0 && (hosp.staff?.isDoctorAvailable ?? true)
+                            ? hosp.onDutyDoctor.status || 'On Duty'
+                            : 'Off Duty'}
                         </span>
                       </div>
 
